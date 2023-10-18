@@ -31,9 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -49,11 +53,14 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-//@Disabled
-public class TF_Easy extends LinearOpMode {
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+@Autonomous
+public class TF_Auto2 extends LinearOpMode {
 
+    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+    private static final String TFOD_MODEL_ASSET = "model_20230924_200543.tflite";
+    private static final String[] LABELS = {
+            "team object",
+    };
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
@@ -66,14 +73,18 @@ public class TF_Easy extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        DcMotor leftF = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
+        DcMotor leftB = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
+        DcMotor rightF = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
+        DcMotor rightB = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
+
+        Servo s = hardwareMap.get(Servo.class, "SERVO_NAME");
+        waitForStart();
 
         initTfod();
 
         // Wait for the DS start button to be touched.
-        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
-        waitForStart();
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
@@ -82,13 +93,16 @@ public class TF_Easy extends LinearOpMode {
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
-
-                // Save CPU resources; can resume streaming when needed.
-                if (gamepad1.dpad_down) {
-                    visionPortal.stopStreaming();
-                } else if (gamepad1.dpad_up) {
-                    visionPortal.resumeStreaming();
+                List<Recognition> currentRecognitions = tfod.getRecognitions();
+                if(currentRecognitions.size() != 0){
+                    for(Recognition x: currentRecognitions){
+                        leftF.setPower(0.5);
+                        leftB.setPower(0.5);
+                        rightF.setPower(0.5);
+                        rightB.setPower(0.5);
+                    }
                 }
+                s.
 
                 // Share the CPU.
                 sleep(20);
@@ -108,18 +122,18 @@ public class TF_Easy extends LinearOpMode {
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
 
-                // Use setModelAssetName() if the TF Model is built in as an asset.
-                // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                //.setModelAssetName(TFOD_MODEL_ASSET)
-                .setModelFileName("model_20230924_200543.tflite")
+            // Use setModelAssetName() if the TF Model is built in as an asset.
+            // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
+            .setModelAssetName(TFOD_MODEL_ASSET)
+            //.setModelFileName(TFOD_MODEL_FILE)
 
-                //.setModelLabels(LABELS)
-                .setIsModelTensorFlow2(true)
-                .setIsModelQuantized(true)
-                .setModelInputSize(300)
-                .setModelAspectRatio(16.0 / 9.0)
+            .setModelLabels(LABELS)
+            //.setIsModelTensorFlow2(true)
+            //.setIsModelQuantized(true)
+            //.setModelInputSize(300)
+            //.setModelAspectRatio(16.0 / 9.0)
 
-                .build();
+            .build();
 
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -135,15 +149,15 @@ public class TF_Easy extends LinearOpMode {
         builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        builder.enableLiveView(true);
+        //builder.enableCameraMonitoring(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
+        //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
 
         // Choose whether or not LiveView stops if no processors are enabled.
         // If set "true", monitor shows solid orange screen if no processors enabled.
         // If set "false", monitor shows camera view without annotations.
-        builder.setAutoStopLiveView(false);
+        //builder.setAutoStopLiveView(false);
 
         // Set and enable the processor.
         builder.addProcessor(tfod);
@@ -155,7 +169,7 @@ public class TF_Easy extends LinearOpMode {
         tfod.setMinResultConfidence(0.80f);
 
         // Disable or re-enable the TFOD processor at any time.
-        visionPortal.setProcessorEnabled(tfod, true);
+        //visionPortal.setProcessorEnabled(tfod, true);
 
     }   // end method initTfod()
 
