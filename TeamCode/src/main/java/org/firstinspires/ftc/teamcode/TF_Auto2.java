@@ -73,12 +73,15 @@ public class TF_Auto2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        DcMotor leftF = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
-        DcMotor leftB = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
-        DcMotor rightF = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
-        DcMotor rightB = hardwareMap.get(DcMotor.class, "MOTOR_NAME");
+        DcMotor leftF = hardwareMap.get(DcMotor.class, "Left_Front_Motor");
+        DcMotor leftB = hardwareMap.get(DcMotor.class, "Left_Back_Motor");
+        DcMotor rightF = hardwareMap.get(DcMotor.class, "Right_Front_Motor");
+        DcMotor rightB = hardwareMap.get(DcMotor.class, "Right_Back_Motor");
 
-        Servo s = hardwareMap.get(Servo.class, "SERVO_NAME");
+        DcMotor arm = hardwareMap.get(DcMotor.class, "Arm_Motor");
+        Servo l = hardwareMap.get(Servo.class, "Left_Servo");
+        Servo r = hardwareMap.get(Servo.class, "Right_Servo");
+
         waitForStart();
 
         initTfod();
@@ -96,13 +99,13 @@ public class TF_Auto2 extends LinearOpMode {
                 List<Recognition> currentRecognitions = tfod.getRecognitions();
                 if(currentRecognitions.size() != 0){
                     for(Recognition x: currentRecognitions){
-                        leftF.setPower(0.5);
-                        leftB.setPower(0.5);
+                        leftF.setPower(-0.5);
+                        leftB.setPower(-0.5);
                         rightF.setPower(0.5);
                         rightB.setPower(0.5);
                     }
                 }
-                s.
+
 
                 // Share the CPU.
                 sleep(20);
