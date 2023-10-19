@@ -94,6 +94,7 @@ public class TF_Auto2 extends LinearOpMode {
 
                 telemetryTfod();
 
+
                 // Push telemetry to the Driver Station.
                 telemetry.update();
                 List<Recognition> currentRecognitions = tfod.getRecognitions();
