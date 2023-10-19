@@ -125,16 +125,16 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
     * **This API may be subject to change for final kickoff release!**
     * Several new samples added.
     * Adds support for detecting AprilTags.
-    * `VisionPortal` is the new entry point for both AprilTag and TFOD processing.
+    * `VisionPortal` is the new entry point for both org.firstinspires.ftc.teamcode.AprilTagForBoard and TFOD processing.
     * Vuforia will be removed in a future release.
     * Updated TensorFlow dependencies.
     * Added support for webcam camera controls to blocks.
     * The Blocks editor's toolbox now has a Vision category, directly above the Utilities category.
 * Related documentation for associated technologies can be found at
-    * [AprilTag Introduction](https://ftc-docs.firstinspires.org/apriltag-intro)
-    * [AprilTag SDK Guide](https://ftc-docs.firstinspires.org/apriltag-sdk)
-    * [AprilTag Detection Values](https://ftc-docs.firstinspires.org/apriltag-detection-values)
-    * [AprilTag Test Images](https://ftc-docs.firstinspires.org/apriltag-test-images)
+    * [org.firstinspires.ftc.teamcode.AprilTagForBoard Introduction](https://ftc-docs.firstinspires.org/apriltag-intro)
+    * [org.firstinspires.ftc.teamcode.AprilTagForBoard SDK Guide](https://ftc-docs.firstinspires.org/apriltag-sdk)
+    * [org.firstinspires.ftc.teamcode.AprilTagForBoard Detection Values](https://ftc-docs.firstinspires.org/apriltag-detection-values)
+    * [org.firstinspires.ftc.teamcode.AprilTagForBoard Test Images](https://ftc-docs.firstinspires.org/apriltag-test-images)
     * [Camera Calibration](https://ftc-docs.firstinspires.org/camera-calibration)
 * Adds Driver Station support for Logitech Dual Action and Sony PS5 DualSense gamepads.
     * This **does not** include support for the Sony PS5 DualSense Edge gamepad.
@@ -148,7 +148,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
   * Addresses that are assigned to other hubs connected to the same USB connection or Control Hub are no longer able to be selected.
 * Increases maximum size of Blocks inline comments to 100 characters
 * Saves position of open Blocks comment balloons
-* Adds new AprilTag Driving samples:  RobotDriveToAprilTagTank & RobotDriveToAprilTagOmni
+* Adds new org.firstinspires.ftc.teamcode.AprilTagForBoard Driving samples:  RobotDriveToAprilTagTank & RobotDriveToAprilTagOmni
 * Adds Sample to illustrate optimizing camera exposure for AprilTags: ConceptAprilTagOptimizeExposure
 
 ### Bug Fixes
