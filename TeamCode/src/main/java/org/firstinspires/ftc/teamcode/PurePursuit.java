@@ -59,6 +59,7 @@ public class PurePursuit extends LinearOpMode {
         // Calculate the target point based on the current waypoint and lookahead distance
         // You can use geometric calculations to find the point
         // Return the target point as {targetX, targetY}
+        
         return new double[]{0.2, 0.4};
     }
 
