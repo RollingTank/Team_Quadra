@@ -29,9 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -40,7 +45,6 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
-
 /*
  * This OpMode illustrates the basics of TensorFlow Object Detection,
  * including Java Builder structures for specifying Vision parameters.
@@ -48,7 +52,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
+@Autonomous(name = "Put Pixel")
 //@Disabled
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
@@ -57,6 +61,23 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private static final String[] LABELS = {
             "team object",
     };
+
+    DcMotor leftF;
+    DcMotor leftB;
+    DcMotor rightF;
+    DcMotor rightB;
+
+    DcMotor Arm;
+
+    //DistanceSensor distanceSensor;
+    Servo angleServo;
+    Servo rightServo;
+    Servo leftServo;
+/*
+
+    DcMotor arm = hardwareMap.get(DcMotor.class, "Arm_Motor");
+    Servo l = hardwareMap.get(Servo.class, "servo3");
+    Servo r = hardwareMap.get(Servo.class, "servo2");*/
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
@@ -78,24 +99,154 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        leftF = hardwareMap.dcMotor.get("Left_Front_Motor");
+        leftB = hardwareMap.dcMotor.get("Left_Back_Motor");
+        rightF = hardwareMap.dcMotor.get("Right_Front_Motor");
+        rightB = hardwareMap.dcMotor.get("Right_Back_Motor");
+        Arm = hardwareMap.dcMotor.get("Arm_Motor");
+        angleServo = hardwareMap.get(Servo.class, "servo1");
+        rightServo = hardwareMap.get(Servo.class, "servo2");
+        leftServo = hardwareMap.get(Servo.class, "servo3");
+        leftServo.setPosition(-0.8);
+        rightServo.setPosition(0.8);
         initTfod();
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
+
         telemetry.update();
+
         waitForStart();
 
-        if (opModeIsActive()) {
+        //if (opModeIsActive()) {
             while (opModeIsActive()) {
+                //INTIALIZE SERVOS TO BE ON SO THE PIXEL DOESN'T COME OFF
+                Arm.setPower(0.28);
+                sleep(500);
+                Arm.setPower(0.08);
+                leftF.setPower(-0.1);
+                leftB.setPower(-0.1);
+                rightB.setPower(0.1);
+                rightF.setPower(0.1);
+                sleep(2000);
+                leftF.setPower(0);
+                leftB.setPower(0);
+                rightB.setPower(0);
+                rightF.setPower(0);
+                sleep(500);
 
-                telemetryTfod();
+                List<Recognition> currentRecognitions = tfod.getRecognitions();
+                currentRecognitions = tfod.getRecognitions();
+                telemetry.addData("Recs", currentRecognitions);
+                telemetry.update();
+//5700
+                if(currentRecognitions.size() != 0){
+                    leftF.setPower(-0.1);
+                    leftB.setPower(-0.1);
+                    rightB.setPower(0.1);
+                    rightF.setPower(0.1);
+                    sleep(4500);
+                    leftF.setPower(0);
+                    leftB.setPower(0);
+                    rightB.setPower(0);
+                    rightF.setPower(0);
+                    angleServo.setPosition(0.98);
+                    sleep(3000);
+                    leftF.setPower(-0.1);
+                    leftB.setPower(-0.1);
+                    rightB.setPower(0.1);
+                    rightF.setPower(0.1);
+                    sleep(1300);
+                    leftServo.setPosition(0.3);
+                    rightServo.setPosition(0.3);
+                    sleep(500);
+                    break;
+                }
+                else{
+                    //FIX THIS ROTATION, THEN HAVE THE ROBOT DRIVE FORWARD AND PUT THE PIXEL DOWN
+                    leftB.setPower(-0.2);
+                    leftF.setPower(-0.2);
+                    rightF.setPower(-0.2);
+                    rightB.setPower(-0.2);
+                    sleep(1250);
+
+                    leftB.setPower(0);
+                    leftF.setPower(0);
+                    rightF.setPower(0);
+                    rightB.setPower(0);
+                    sleep(500);
+
+                    currentRecognitions = tfod.getRecognitions();
+                    telemetry.addData("Recs", currentRecognitions);
+                    telemetry.update();
+                    if (currentRecognitions.size()!= 0){
+                        leftF.setPower(-0.1);
+                        leftB.setPower(-0.1);
+                        rightB.setPower(0.1);
+                        rightF.setPower(0.1);
+                        sleep(2000);
+                        leftF.setPower(0);
+                        leftB.setPower(0);
+                        rightB.setPower(0);
+                        rightF.setPower(0);
+                        angleServo.setPosition(0.98);
+                        sleep(2500);
+                        leftF.setPower(-0.1);
+                        leftB.setPower(-0.1);
+                        rightB.setPower(0.1);
+                        rightF.setPower(0.1);
+                        sleep(2400);
+                        leftF.setPower(0);
+                        leftB.setPower(0);
+                        rightB.setPower(0);
+                        rightF.setPower(0);
+                        leftServo.setPosition(0.3);
+                        rightServo.setPosition(0.3);
+                        sleep(500);
+
+                        break;
+                    }
+                    else {
+                        leftB.setPower(0.2);
+                        leftF.setPower(0.2);
+                        rightF.setPower(0.2);
+                        rightB.setPower(0.2);
+                        sleep(1900);
+
+                        leftF.setPower(-0.1);
+                        leftB.setPower(-0.1);
+                        rightB.setPower(0.1);
+                        rightF.setPower(0.1);
+                        sleep(2000);
+
+                        leftF.setPower(0);
+                        leftB.setPower(0);
+                        rightB.setPower(0);
+                        rightF.setPower(0);
+                        angleServo.setPosition(0.98);
+                        sleep(2500);
+                        leftF.setPower(-0.1);
+                        leftB.setPower(-0.1);
+                        rightB.setPower(0.1);
+                        rightF.setPower(0.1);
+                        sleep(2000);
+
+                        leftF.setPower(0);
+                        leftB.setPower(0);
+                        rightB.setPower(0);
+                        rightF.setPower(0);
+                        leftServo.setPosition(0.3);
+                        rightServo.setPosition(0.3);
+                        sleep(500);
+                        break;
+                    }
+
+                }
 
                 // Push telemetry to the Driver Station.
-                telemetry.update();
 
-                // Save CPU resources; can resume streaming when needed.
+                /*// Save CPU resources; can resume streaming when needed.
                 if (gamepad1.dpad_down) {
                     visionPortal.stopStreaming();
                 } else if (gamepad1.dpad_up) {
@@ -103,14 +254,14 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                 }
 
                 // Share the CPU.
-                sleep(20);
+                sleep(20);*/
             }
         }
 
         // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
+        //visionPortal.close();
 
-    }   // end runOpMode()
+   // }   // end runOpMode()
 
     /**
      * Initialize the TensorFlow Object Detection processor.
@@ -169,7 +320,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.70f);
+        tfod.setMinResultConfidence(0.65f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -179,7 +330,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
      */
-    private void telemetryTfod() {
+    private List<Recognition> telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
@@ -194,7 +345,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
         }   // end for() loop
-
+        return currentRecognitions;
     }   // end method telemetryTfod()
 
 }   // end class
