@@ -52,14 +52,18 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Put Pixel")
+@Autonomous(name = "Blue Put Pixel")
 //@Disabled
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    private static final String TFOD_MODEL_ASSET = "model_20231018_181921.tflite";
-    private static final String[] LABELS = {
+    private static final String TFOD_MODEL_ASSET_BLUE = "model_20231018_181921.tflite";
+    private static final String TFOD_MODEL_ASSET_RED = "model_20231027_204348.tflite";
+    private static final String[] LABELS_BLUE = {
             "team object",
+    };
+    private static final String[] LABELS_RED = {
+            "red_object",
     };
 
     DcMotor leftF;
@@ -90,12 +94,13 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
-    private TfodProcessor tfod;
-
+    private TfodProcessor tfod_blue;
+    private TfodProcessor tfod_red;
     /**
      * The variable to store our instance of the vision portal.
      */
     private VisionPortal visionPortal;
+    private List<Recognition> currentRecognitions;
 
     @Override
     public void runOpMode() {
@@ -109,6 +114,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         leftServo = hardwareMap.get(Servo.class, "servo3");
         leftServo.setPosition(-0.8);
         rightServo.setPosition(0.8);
+        Arm.setPower(0.08);
         initTfod();
 
         // Wait for the DS start button to be touched.
@@ -120,127 +126,129 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         waitForStart();
 
         //if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                //INTIALIZE SERVOS TO BE ON SO THE PIXEL DOESN'T COME OFF
-                Arm.setPower(0.28);
-                sleep(500);
-                Arm.setPower(0.08);
+        while (opModeIsActive()) {
+            //INTIALIZE SERVOS TO BE ON SO THE PIXEL DOESN'T COME OFF
+            Arm.setPower(0.08);
+            leftF.setPower(-0.1);
+            leftB.setPower(-0.1);
+            rightB.setPower(0.1);
+            rightF.setPower(0.1);
+            sleep(2000);
+            leftF.setPower(0);
+            leftB.setPower(0);
+            rightB.setPower(0);
+            rightF.setPower(0);
+            sleep(500);
+
+                currentRecognitions = tfod_blue.getRecognitions();
+                currentRecognitions.addAll(tfod_red.getRecognitions());
+                telemetry.addData("Recs", currentRecognitions);
+                telemetry.update();
+//5700
+            if(currentRecognitions.size() != 0){
                 leftF.setPower(-0.1);
                 leftB.setPower(-0.1);
                 rightB.setPower(0.1);
                 rightF.setPower(0.1);
-                sleep(2000);
+                sleep(3000);
                 leftF.setPower(0);
                 leftB.setPower(0);
                 rightB.setPower(0);
                 rightF.setPower(0);
                 sleep(500);
+                angleServo.setPosition(0.98);
+                sleep(3000);
+                leftF.setPower(-0.1);
+                leftB.setPower(-0.1);
+                rightB.setPower(0.1);
+                rightF.setPower(0.1);
+                sleep(2000);
+                leftServo.setPosition(0.3);
+                rightServo.setPosition(0.3);
+                sleep(500);
+                break;
+            }
+            else{
+                //FIX THIS ROTATION, THEN HAVE THE ROBOT DRIVE FORWARD AND PUT THE PIXEL DOWN
+                leftB.setPower(-0.2);
+                leftF.setPower(-0.2);
+                rightF.setPower(-0.2);
+                rightB.setPower(-0.2);
+                sleep(1250);
 
-                List<Recognition> currentRecognitions = tfod.getRecognitions();
-                currentRecognitions = tfod.getRecognitions();
-                telemetry.addData("Recs", currentRecognitions);
-                telemetry.update();
-//5700
-                if(currentRecognitions.size() != 0){
+                leftB.setPower(0);
+                leftF.setPower(0);
+                rightF.setPower(0);
+                rightB.setPower(0);
+                sleep(500);
+
+                    currentRecognitions = tfod_blue.getRecognitions();
+                    currentRecognitions.addAll(tfod_red.getRecognitions());
+                    telemetry.addData("Recs", currentRecognitions);
+                    telemetry.update();
+                if (currentRecognitions.size()!= 0){
                     leftF.setPower(-0.1);
                     leftB.setPower(-0.1);
                     rightB.setPower(0.1);
                     rightF.setPower(0.1);
-                    sleep(4500);
+                    sleep(2000);
                     leftF.setPower(0);
                     leftB.setPower(0);
                     rightB.setPower(0);
                     rightF.setPower(0);
+                    sleep(500);
                     angleServo.setPosition(0.98);
-                    sleep(3000);
+                    sleep(2500);
                     leftF.setPower(-0.1);
                     leftB.setPower(-0.1);
                     rightB.setPower(0.1);
                     rightF.setPower(0.1);
-                    sleep(1300);
+                    sleep(2400);
+                    leftF.setPower(0);
+                    leftB.setPower(0);
+                    rightB.setPower(0);
+                    rightF.setPower(0);
+                    leftServo.setPosition(0.3);
+                    rightServo.setPosition(0.3);
+                    sleep(500);
+
+                    break;
+                }
+                else {
+                    leftB.setPower(0.2);
+                    leftF.setPower(0.2);
+                    rightF.setPower(0.2);
+                    rightB.setPower(0.2);
+                    sleep(1900);
+
+                    leftF.setPower(-0.1);
+                    leftB.setPower(-0.1);
+                    rightB.setPower(0.1);
+                    rightF.setPower(0.1);
+                    sleep(2000);
+
+                    leftF.setPower(0);
+                    leftB.setPower(0);
+                    rightB.setPower(0);
+                    rightF.setPower(0);
+                    sleep(500);
+                    angleServo.setPosition(0.98);
+                    sleep(2500);
+                    leftF.setPower(-0.1);
+                    leftB.setPower(-0.1);
+                    rightB.setPower(0.1);
+                    rightF.setPower(0.1);
+                    sleep(1500);
+
+                    leftF.setPower(0);
+                    leftB.setPower(0);
+                    rightB.setPower(0);
+                    rightF.setPower(0);
                     leftServo.setPosition(0.3);
                     rightServo.setPosition(0.3);
                     sleep(500);
                     break;
                 }
-                else{
-                    //FIX THIS ROTATION, THEN HAVE THE ROBOT DRIVE FORWARD AND PUT THE PIXEL DOWN
-                    leftB.setPower(-0.2);
-                    leftF.setPower(-0.2);
-                    rightF.setPower(-0.2);
-                    rightB.setPower(-0.2);
-                    sleep(1250);
-
-                    leftB.setPower(0);
-                    leftF.setPower(0);
-                    rightF.setPower(0);
-                    rightB.setPower(0);
-                    sleep(500);
-
-                    currentRecognitions = tfod.getRecognitions();
-                    telemetry.addData("Recs", currentRecognitions);
-                    telemetry.update();
-                    if (currentRecognitions.size()!= 0){
-                        leftF.setPower(-0.1);
-                        leftB.setPower(-0.1);
-                        rightB.setPower(0.1);
-                        rightF.setPower(0.1);
-                        sleep(2000);
-                        leftF.setPower(0);
-                        leftB.setPower(0);
-                        rightB.setPower(0);
-                        rightF.setPower(0);
-                        angleServo.setPosition(0.98);
-                        sleep(2500);
-                        leftF.setPower(-0.1);
-                        leftB.setPower(-0.1);
-                        rightB.setPower(0.1);
-                        rightF.setPower(0.1);
-                        sleep(2400);
-                        leftF.setPower(0);
-                        leftB.setPower(0);
-                        rightB.setPower(0);
-                        rightF.setPower(0);
-                        leftServo.setPosition(0.3);
-                        rightServo.setPosition(0.3);
-                        sleep(500);
-
-                        break;
-                    }
-                    else {
-                        leftB.setPower(0.2);
-                        leftF.setPower(0.2);
-                        rightF.setPower(0.2);
-                        rightB.setPower(0.2);
-                        sleep(1900);
-
-                        leftF.setPower(-0.1);
-                        leftB.setPower(-0.1);
-                        rightB.setPower(0.1);
-                        rightF.setPower(0.1);
-                        sleep(2000);
-
-                        leftF.setPower(0);
-                        leftB.setPower(0);
-                        rightB.setPower(0);
-                        rightF.setPower(0);
-                        angleServo.setPosition(0.98);
-                        sleep(2500);
-                        leftF.setPower(-0.1);
-                        leftB.setPower(-0.1);
-                        rightB.setPower(0.1);
-                        rightF.setPower(0.1);
-                        sleep(2000);
-
-                        leftF.setPower(0);
-                        leftB.setPower(0);
-                        rightB.setPower(0);
-                        rightF.setPower(0);
-                        leftServo.setPosition(0.3);
-                        rightServo.setPosition(0.3);
-                        sleep(500);
-                        break;
-                    }
 
                 }
 
@@ -269,25 +277,45 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private void initTfod() {
 
         // Create the TensorFlow processor by using a builder.
-        tfod = new TfodProcessor.Builder()
+        tfod_blue = new TfodProcessor.Builder()
 
             // With the following lines commented out, the default TfodProcessor Builder
             // will load the default model for the season. To define a custom model to load, 
             // choose one of the following:
             //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
             //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-            .setModelAssetName(TFOD_MODEL_ASSET)
+            .setModelAssetName(TFOD_MODEL_ASSET_BLUE)
             //.setModelFileName(TFOD_MODEL_FILE)
 
             // The following default settings are available to un-comment and edit as needed to 
             // set parameters for custom models.
-            .setModelLabels(LABELS)
+            .setModelLabels(LABELS_BLUE)
             //.setIsModelTensorFlow2(true)
             //.setIsModelQuantized(true)
             //.setModelInputSize(300)
             //.setModelAspectRatio(16.0 / 9.0)
 
             .build();
+        // Create the TensorFlow processor by using a builder.
+        tfod_red = new TfodProcessor.Builder()
+
+                // With the following lines commented out, the default TfodProcessor Builder
+                // will load the default model for the season. To define a custom model to load,
+                // choose one of the following:
+                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
+                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
+                .setModelAssetName(TFOD_MODEL_ASSET_RED)
+                //.setModelFileName(TFOD_MODEL_FILE)
+
+                // The following default settings are available to un-comment and edit as needed to
+                // set parameters for custom models.
+                .setModelLabels(LABELS_RED)
+                //.setIsModelTensorFlow2(true)
+                //.setIsModelQuantized(true)
+                //.setModelInputSize(300)
+                //.setModelAspectRatio(16.0 / 9.0)
+
+                .build();
 
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
@@ -314,13 +342,15 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         //builder.setAutoStopLiveView(false);
 
         // Set and enable the processor.
-        builder.addProcessor(tfod);
+        builder.addProcessor(tfod_blue);
+        builder.addProcessor(tfod_red);
 
         // Build the Vision Portal, using the above settings.
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.65f);
+        tfod_blue.setMinResultConfidence(0.65f);
+        tfod_red.setMinResultConfidence(0.75f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -332,7 +362,8 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      */
     private List<Recognition> telemetryTfod() {
 
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
+        List<Recognition> currentRecognitions = tfod_blue.getRecognitions();
+        currentRecognitions = tfod_red.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 
         // Step through the list of recognitions and display info for each one.

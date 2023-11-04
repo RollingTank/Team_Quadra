@@ -14,19 +14,15 @@ public class DriveTrain extends OpMode {
     DcMotor RF;
     DcMotor LF;
     DcMotor Arm;
+    DcMotor Actuator;
 
-    DistanceSensor distanceSensor;
+    //DistanceSensor distanceSensor;
     Servo angleServo;
     Servo rightServo;
     Servo leftServo;
     Servo planeServo;
 
     double servoAngle;
-
-
-
-
-
 
     @Override
     public void init() {
@@ -40,13 +36,12 @@ public class DriveTrain extends OpMode {
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
         planeServo = hardwareMap.get(Servo.class, "servo4");
+        Actuator = hardwareMap.dcMotor.get("Actuator_Motor");
 
         //servoAngle = 0.5;
 
-        angleServo.setPosition(0.15);
-        rightServo.setPosition(0.3);
-        leftServo.setPosition(0.3);
         planeServo.setPosition(0);
+        Arm.setPower(0.09);
 
 
     }
@@ -125,7 +120,7 @@ public class DriveTrain extends OpMode {
 
         //arm motor controls
         if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
-            Arm.setPower(0.08);
+            Arm.setPower(0.09);
         }
         if (gamepad2.right_trigger == 1) {
             Arm.setPower(0.5);
@@ -145,8 +140,11 @@ public class DriveTrain extends OpMode {
         }
 
         if (gamepad2.b) {
-            leftServo.setPosition(-0.2);
-            rightServo.setPosition(0.8);
+            leftServo.setPosition(-0.6);
+            rightServo.setPosition(0.6);
+        }
+        if (gamepad2.x) {
+            rightServo.setPosition(0.6);
         }
 
         if (gamepad2.right_bumper) {
@@ -157,12 +155,13 @@ public class DriveTrain extends OpMode {
             angleServo.setPosition(0.98);
             //servoAngle =0.00;
         }
-        if (gamepad2.x) {
-            angleServo.setPosition(-1.00);
-        }
         if (gamepad2.x && gamepad2.dpad_right && gamepad2.dpad_left) {
             planeServo.setPosition(0.4);
             //servoAngle =0.00;
+        }
+
+        if (gamepad2.left_stick_y!=0) {
+            Actuator.setPower(-gamepad2.left_stick_y);
         }
 
         //angleServo.setPosition(servoAngle);
