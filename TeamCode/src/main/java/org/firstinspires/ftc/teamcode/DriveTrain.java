@@ -17,7 +17,8 @@ public class DriveTrain extends OpMode {
     DcMotor Actuator;
 
     //DistanceSensor distanceSensor;
-    Servo angleServo;
+    Servo angleServo1;
+    Servo angleServo2;
     Servo rightServo;
     Servo leftServo;
     Servo planeServo;
@@ -32,7 +33,8 @@ public class DriveTrain extends OpMode {
         RF = hardwareMap.dcMotor.get("Left_Front_Motor");
         LF = hardwareMap.dcMotor.get("Right_Front_Motor");
         Arm = hardwareMap.dcMotor.get("Arm_Motor");
-        angleServo = hardwareMap.get(Servo.class, "servo1");
+        angleServo1 = hardwareMap.get(Servo.class, "servo1");
+        angleServo2 = hardwareMap.get(Servo.class, "servo5");
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
         planeServo = hardwareMap.get(Servo.class, "servo4");
@@ -147,12 +149,14 @@ public class DriveTrain extends OpMode {
             rightServo.setPosition(0.6);
         }
 
-        if (gamepad2.right_bumper) {
-            angleServo.setPosition(-0.8);
+        if (gamepad2.left_bumper) {
+            angleServo1.setPosition(-1.00);
+            angleServo2.setPosition(1.00);
             //servoAngle = 0.1;
         }
-        if (gamepad2.left_bumper) {
-            angleServo.setPosition(1.00);
+        if (gamepad2.right_bumper) {
+            angleServo1.setPosition(0.965);
+            angleServo2.setPosition(-1.00);
             //servoAngle =0.00;
         }
         if (gamepad2.x && gamepad2.dpad_right && gamepad2.dpad_left) {

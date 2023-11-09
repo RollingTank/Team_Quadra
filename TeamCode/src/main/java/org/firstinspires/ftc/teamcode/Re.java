@@ -58,7 +58,7 @@ public class Re extends LinearOpMode {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static final String TFOD_MODEL_ASSET = "model_20231027_204348.tflite";
     private static final String[] LABELS = {
-            "team object",
+            "red_object",
     };
 
     DcMotor leftF;
@@ -69,7 +69,7 @@ public class Re extends LinearOpMode {
     DcMotor Arm;
 
     //DistanceSensor distanceSensor;
-    Servo angleServo;
+    Servo angleServo1, angleServo2;
     Servo rightServo;
     Servo leftServo;
 
@@ -110,6 +110,13 @@ public class Re extends LinearOpMode {
         rightF.setPower(-power);
         sleep(milliseconds);
     }
+    public void moveLeftRight(int milliseconds,double power){
+        leftB.setPower(-power);
+        leftF.setPower(power);
+        rightB.setPower(-power);
+        rightF.setPower(power);
+        sleep(milliseconds);
+    }
 
     @Override
     public void runOpMode() {
@@ -118,7 +125,8 @@ public class Re extends LinearOpMode {
         rightF = hardwareMap.dcMotor.get("Right_Front_Motor");
         rightB = hardwareMap.dcMotor.get("Right_Back_Motor");
         Arm = hardwareMap.dcMotor.get("Arm_Motor");
-        angleServo = hardwareMap.get(Servo.class, "servo1");
+        angleServo1 = hardwareMap.get(Servo.class, "servo1");
+        angleServo2 = hardwareMap.get(Servo.class, "servo5");
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
         leftServo.setPosition(-0.8);
@@ -149,7 +157,8 @@ public class Re extends LinearOpMode {
             if(currentRecognitions.size() != 0){
                 moveForwardBackward(500, 0.2);
                 moveForwardBackward(500, 0);
-                angleServo.setPosition(0.98);
+                angleServo1.setPosition(0.98);
+                angleServo2.setPosition(-0.98);
                 sleep(3000);
                 Arm.setPower(0.12);
                 moveForwardBackward(600, 0.2);
@@ -164,11 +173,7 @@ public class Re extends LinearOpMode {
                 Arm.setPower(0.09);
                 moveForwardBackward(1000, -0.2);
 
-                leftB.setPower(-0.4);
-                leftF.setPower(0.4);
-                rightB.setPower(-0.4);
-                rightF.setPower(0.4);
-                sleep(2500);
+                moveLeftRight(2500, 0.4);
 
                 break;
             }
@@ -192,7 +197,8 @@ public class Re extends LinearOpMode {
                     //sleep(2000);
                     moveForwardBackward(500, 0);
                     Arm.setPower(0.15);
-                    angleServo.setPosition(0.98);
+                    angleServo1.setPosition(0.98);
+                    angleServo2.setPosition(0.98);
                     sleep(3000);
                     moveForwardBackward(900, 0.2);
                     moveForwardBackward(500, 0);
@@ -211,11 +217,7 @@ public class Re extends LinearOpMode {
 
                     moveForwardBackward(1000, -0.2);
 
-                    leftB.setPower(-0.4);
-                    leftF.setPower(0.4);
-                    rightB.setPower(-0.4);
-                    rightF.setPower(0.4);
-                    sleep(2500);
+                    moveLeftRight(2500, 0.4);
 
                     break;
                 }
@@ -238,7 +240,8 @@ public class Re extends LinearOpMode {
 
                     moveForwardBackward(500, 0);
                     Arm.setPower(0.15);
-                    angleServo.setPosition(0.98);
+                    angleServo1.setPosition(0.98);
+                    angleServo2.setPosition(0.98);
                     sleep(3000);
 
 
@@ -254,11 +257,7 @@ public class Re extends LinearOpMode {
                     rotateClockwise(1500, -0.2);
                     moveForwardBackward(1000, -0.2);
 
-                    leftB.setPower(-0.4);
-                    leftF.setPower(0.4);
-                    rightB.setPower(-0.4);
-                    rightF.setPower(0.4);
-                    sleep(2500);
+                    moveLeftRight(2500, 0.4);
 
                     break;
                 }

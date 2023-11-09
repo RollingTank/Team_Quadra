@@ -52,7 +52,27 @@ import java.util.List;
 @Autonomous(name = "BLUE park and put")
 //@Disabled
 public class BlueParkandPut extends LinearOpMode {
-
+    private void moveForwardBackward(int milliseconds, double power) {
+        leftF.setPower(-power);
+        leftB.setPower(-power);
+        rightB.setPower(power);
+        rightF.setPower(power);
+        sleep(milliseconds);
+    }
+    public void rotateClockwise(int milliseconds, double power){
+        leftF.setPower(-power);
+        leftB.setPower(-power);
+        rightB.setPower(-power);
+        rightF.setPower(-power);
+        sleep(milliseconds);
+    }
+    public void moveLeftRight(int milliseconds,double power){
+        leftB.setPower(-power);
+        leftF.setPower(power);
+        rightB.setPower(-power);
+        rightF.setPower(power);
+        sleep(milliseconds);
+    }
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static final String TFOD_MODEL_ASSET = "model_20231018_181921.tflite";
     private static final String[] LABELS = {
@@ -121,16 +141,8 @@ public class BlueParkandPut extends LinearOpMode {
         while (opModeIsActive()) {
             //INTIALIZE SERVOS TO BE ON SO THE PIXEL DOESN'T COME OFF
             Arm.setPower(0.09);
-            leftF.setPower(-0.2);
-            leftB.setPower(-0.2);
-            rightB.setPower(0.2);
-            rightF.setPower(0.2);
-            sleep(1500);
-            leftF.setPower(0);
-            leftB.setPower(0);
-            rightB.setPower(0);
-            rightF.setPower(0);
-            sleep(3000);
+            moveForwardBackward(1500, 0.2);
+            moveForwardBackward(3000, 0);
 
             List<Recognition> currentRecognitions = tfod.getRecognitions();
             currentRecognitions = tfod.getRecognitions();
@@ -138,28 +150,13 @@ public class BlueParkandPut extends LinearOpMode {
             telemetry.update();
 //5700
             if(currentRecognitions.size() != 0){
-                leftF.setPower(-0.2);
-                leftB.setPower(-0.2);
-                rightB.setPower(0.2);
-                rightF.setPower(0.2);
-                sleep(500);
-                leftF.setPower(0);
-                leftB.setPower(0);
-                rightB.setPower(0);
-                rightF.setPower(0);
-                sleep(500);
+                moveForwardBackward(500, 0.2);
+                moveForwardBackward(500, 0);
                 angleServo.setPosition(0.98);
                 sleep(3000);
                 Arm.setPower(0.12);
-                leftF.setPower(-0.2);
-                leftB.setPower(-0.2);
-                rightB.setPower(0.2);
-                rightF.setPower(0.2);
-                sleep(600);
-                leftF.setPower(0);
-                leftB.setPower(0);
-                rightB.setPower(0);
-                rightF.setPower(0);
+                moveForwardBackward(600, 0.2);
+                moveForwardBackward(1, 0);
                 leftServo.setPosition(0.3);
                 rightServo.setPosition(0.3);
                 sleep(500);
@@ -169,43 +166,19 @@ public class BlueParkandPut extends LinearOpMode {
                 Arm.setPower(0.4);
                 sleep(1500);
                 Arm.setPower(0.09);
-                leftB.setPower(0.2);
-                leftF.setPower(0.2);
-                rightB.setPower(-0.2);
-                rightF.setPower(-0.2);
-                sleep(1000);
+                moveForwardBackward(1000, -0.2);
 
-                leftB.setPower(-0.4);
-                leftF.setPower(0.4);
-                rightB.setPower(-0.4);
-                rightF.setPower(0.4);
-                sleep(2500);
+               moveLeftRight(2500, 0.4);
 
                 break;
             }
             else{
                 //FIX THIS ROTATION, THEN HAVE THE ROBOT DRIVE FORWARD AND PUT THE PIXEL DOWN
-                leftF.setPower(-0.2);
-                leftB.setPower(-0.2);
-                rightB.setPower(0.2);
-                rightF.setPower(0.2);
-                sleep(400);
-                leftF.setPower(0);
-                leftB.setPower(0);
-                rightB.setPower(0);
-                rightF.setPower(0);
-                sleep(3000);
-                leftB.setPower(-0.2);
-                leftF.setPower(-0.2);
-                rightF.setPower(-0.2);
-                rightB.setPower(-0.2);
-                sleep(1500);
+                moveForwardBackward(400, 0.2);
+                moveForwardBackward(3000,0);
+                rotateClockwise(1500, 0.2);
 
-                leftB.setPower(0);
-                leftF.setPower(0);
-                rightF.setPower(0);
-                rightB.setPower(0);
-                sleep(2000);
+                moveForwardBackward(2000, 0);
 
                 currentRecognitions = tfod.getRecognitions();
                 telemetry.addData("Recs", currentRecognitions);
@@ -217,75 +190,36 @@ public class BlueParkandPut extends LinearOpMode {
                     //rightB.setPower(0.2);
                     //rightF.setPower(0.2);
                     //sleep(2000);
-                    leftF.setPower(0);
-                    leftB.setPower(0);
-                    rightB.setPower(0);
-                    rightF.setPower(0);
-                    sleep(500);
+                    moveForwardBackward(500, 0);
                     Arm.setPower(0.15);
                     angleServo.setPosition(0.98);
                     sleep(3000);
-                    leftF.setPower(-0.2);
-                    leftB.setPower(-0.2);
-                    rightB.setPower(0.2);
-                    rightF.setPower(0.2);
-                    sleep(900);
-                    leftF.setPower(0);
-                    leftB.setPower(0);
-                    rightB.setPower(0);
-                    rightF.setPower(0);
-                    sleep(500);
+                    moveForwardBackward(900, 0.2);
+                    moveForwardBackward(500, 0);
                     leftServo.setPosition(0.3);
                     rightServo.setPosition(0.3);
                     sleep(500);
 
-                    leftB.setPower(0.2);
-                    leftF.setPower(0.2);
-                    rightB.setPower(-0.2);
-                    rightF.setPower(-0.2);
-                    sleep(1000);
+                    moveForwardBackward(1000, -0.2);
                     //Turn Left to park
 
                     Arm.setPower(0.4);
                     sleep(1500);
                     Arm.setPower(0.09);
-                    leftB.setPower(0.2);
-                    leftF.setPower(0.2);
-                    rightF.setPower(0.2);
-                    rightB.setPower(0.2);
-                    sleep(1500);
-                    leftB.setPower(0.2);
-                    leftF.setPower(0.2);
-                    rightB.setPower(-0.2);
-                    rightF.setPower(-0.2);
-                    sleep(1000);
+                    rotateClockwise(1500, -0.2);
+                    moveForwardBackward(1000, -0.2);
 
-                    leftB.setPower(-0.4);
-                    leftF.setPower(0.4);
-                    rightB.setPower(-0.4);
-                    rightF.setPower(0.4);
-                    sleep(2500);
+                    moveLeftRight(2500, 0.4
+                    );
                     break;
                 }
                 else {
                     sleep(500);
-                    leftB.setPower(0.2);
-                    leftF.setPower(0.2);
-                    rightF.setPower(0.2);
-                    rightB.setPower(0.2);
-                    sleep(2800);
+                    rotateClockwise(2800, -0.2);
 
-                    leftB.setPower(0);
-                    leftF.setPower(0);
-                    rightF.setPower(0);
-                    rightB.setPower(0);
-                    sleep(500);
+                    moveForwardBackward(500, 0);
 
-                    leftB.setPower(-0.2);
-                    leftF.setPower(-0.2);
-                    rightF.setPower(0.2);
-                    rightB.setPower(0.2);
-                    sleep(300);
+                    moveForwardBackward(300, 0.2);
 
 
 
@@ -296,20 +230,13 @@ public class BlueParkandPut extends LinearOpMode {
                     //              rightF.setPower(0.2);
                     //            sleep(2000);
 
-                    leftF.setPower(0);
-                    leftB.setPower(0);
-                    rightB.setPower(0);
-                    rightF.setPower(0);
-                    sleep(500);
+                    moveForwardBackward(500, 0);
                     Arm.setPower(0.15);
                     angleServo.setPosition(0.98);
                     sleep(3000);
 
 
-                    leftF.setPower(0);
-                    leftB.setPower(0);
-                    rightB.setPower(0);
-                    rightF.setPower(0);
+                    moveForwardBackward(1, 0);
                     leftServo.setPosition(0.3);
                     rightServo.setPosition(0.3);
                     sleep(500);
@@ -319,24 +246,12 @@ public class BlueParkandPut extends LinearOpMode {
                     sleep(1500);
                     Arm.setPower(0.09);
 
-                    leftB.setPower(-0.2);
-                    leftF.setPower(-0.2);
-                    rightF.setPower(-0.2);
-                    rightB.setPower(-0.2);
-                    sleep(1550);
+                    rotateClockwise(1550, 0.2);
 
 
-                    leftB.setPower(0.2);
-                    leftF.setPower(0.2);
-                    rightB.setPower(-0.2);
-                    rightF.setPower(-0.2);
-                    sleep(1000);
+                    moveForwardBackward(1000, -0.2);
 
-                    leftB.setPower(-0.4);
-                    leftF.setPower(0.4);
-                    rightB.setPower(-0.4);
-                    rightF.setPower(0.4);
-                    sleep(2500);
+                    moveLeftRight(2500, 0.4);
                     break;
                 }
 
