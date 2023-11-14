@@ -43,7 +43,7 @@ public class DriveTrain extends OpMode {
         //servoAngle = 0.5;
 
         planeServo.setPosition(0);
-        Arm.setPower(0.09);
+        Arm.setPower(0.15);
 
 
     }
@@ -122,13 +122,13 @@ public class DriveTrain extends OpMode {
 
         //arm motor controls
         if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
-            Arm.setPower(0.09);
+            Arm.setPower(0.15);
         }
         if (gamepad2.right_trigger == 1) {
-            Arm.setPower(0.5);
+            Arm.setPower(0.55);
         }
         if (gamepad2.left_trigger == 1) {
-            Arm.setPower(-0.5);
+            Arm.setPower(-0.35);
         }
         if (gamepad2.y) {
             Arm.setPower(-0.13);
@@ -142,21 +142,21 @@ public class DriveTrain extends OpMode {
         }
 
         if (gamepad2.b) {
-            leftServo.setPosition(-0.75);
+            leftServo.setPosition(-1);
             rightServo.setPosition(0.75);
         }
         if (gamepad2.x) {
-            rightServo.setPosition(0.6);
+            rightServo.setPosition(0.3);
         }
 
         if (gamepad2.left_bumper) {
-            angleServo1.setPosition(-1.00);
-            angleServo2.setPosition(1.00);
+            angleServo1.setPosition(-0.99);
+            angleServo2.setPosition(1);
             //servoAngle = 0.1;
         }
         if (gamepad2.right_bumper) {
-            angleServo1.setPosition(0.965);
-            angleServo2.setPosition(-1.00);
+            angleServo1.setPosition(1.00);
+            angleServo2.setPosition(-0.99);
             //servoAngle =0.00;
         }
         if (gamepad2.x && gamepad2.dpad_right && gamepad2.dpad_left) {

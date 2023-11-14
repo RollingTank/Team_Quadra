@@ -50,7 +50,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "RED park and put")
+@Autonomous(name = "RED park and put REJAVA")
 
 //@Disabled
 public class Re extends LinearOpMode {
@@ -117,7 +117,26 @@ public class Re extends LinearOpMode {
         rightF.setPower(power);
         sleep(milliseconds);
     }
+    public void angleServoDown() {
+        angleServo1.setPosition(0.965); //sets angle servo down to place pixel on floor
+        angleServo2.setPosition(-1.00);
+        sleep(500);
+    }
 
+    public void angleServoUp() {
+        angleServo1.setPosition(-1.00); //sets angle servo up to place pixel on board
+        angleServo2.setPosition(1.00);
+    }
+
+    public void releaseFirstPixel() {
+        rightServo.setPosition(0.3);
+        sleep(500);
+    }
+
+    public void releaseSecondPixel() {
+        leftServo.setPosition(0.3);
+        sleep(500);
+    }
     @Override
     public void runOpMode() {
         leftF = hardwareMap.dcMotor.get("Left_Front_Motor");
@@ -129,9 +148,9 @@ public class Re extends LinearOpMode {
         angleServo2 = hardwareMap.get(Servo.class, "servo5");
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
-        leftServo.setPosition(-0.8);
-        rightServo.setPosition(0.8);
-        Arm.setPower(0.09);
+        leftServo.setPosition(-1);
+        rightServo.setPosition(0.75);
+        Arm.setPower(0.15);
         initTfod();
 
         // Wait for the DS start button to be touched.
@@ -145,7 +164,7 @@ public class Re extends LinearOpMode {
         //if (opModeIsActive()) {
         while (opModeIsActive()) {
             //INTIALIZE SERVOS TO BE ON SO THE PIXEL DOESN'T COME OFF
-            Arm.setPower(0.09);
+            Arm.setPower(0.15);
             moveForwardBackward(1500, 0.2);
             moveForwardBackward(3000, 0);
 
@@ -157,24 +176,35 @@ public class Re extends LinearOpMode {
             if(currentRecognitions.size() != 0){
                 moveForwardBackward(500, 0.2);
                 moveForwardBackward(500, 0);
-                angleServo1.setPosition(0.98);
-                angleServo2.setPosition(-0.98);
+                Arm.setPower(0.23);
+                angleServo1.setPosition(-0.99);
+                angleServo2.setPosition(1);
                 sleep(3000);
-                Arm.setPower(0.12);
-                moveForwardBackward(600, 0.2);
+                Arm.setPower(0.16);
+                moveForwardBackward(1200, 0.2);
                 moveForwardBackward(1, 0);
                 leftServo.setPosition(0.3);
-                rightServo.setPosition(0.3);
                 sleep(500);
+
                 //Park
 
                 Arm.setPower(0.4);
                 sleep(1500);
-                Arm.setPower(0.09);
-                moveForwardBackward(1000, -0.2);
+                Arm.setPower(0.15);
+                //moveLeftRight(2500, 0.4);
+                moveLeftRight(2000,-0.3);
+                rotateClockwise(3000,-0.2);
 
-                moveLeftRight(2500, 0.4);
+                Arm.setPower(0.5);
+                sleep(1000);
+                Arm.setPower(0.15);
+                angleServo1.setPosition(1.00);
+                angleServo2.setPosition(-0.99);
+                sleep(2500);
 
+                moveForwardBackward(2500,-0.2);
+                //moveLeftRight(1000,-0.2);
+                rightServo.setPosition(0.3);
                 break;
             }
             else{
@@ -189,6 +219,7 @@ public class Re extends LinearOpMode {
                 telemetry.addData("Recs", currentRecognitions);
                 telemetry.update();
                 sleep(500);
+
                 if (currentRecognitions.size()!= 0){
                     //leftF.setPower(-0.2);
                     //leftB.setPower(-0.2);
@@ -215,7 +246,7 @@ public class Re extends LinearOpMode {
                     moveForwardBackward(1550, 0.2);
 
 
-                    moveForwardBackward(1000, -0.2);
+                    //moveForwardBackward(1000, -0.2);
 
                     moveLeftRight(2500, 0.4);
 
