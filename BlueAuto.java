@@ -42,9 +42,11 @@ public class BlueAuto extends LinearOpMode {
     private static final double lsOpenPosition = 0.3;
     private static final double lsClosePosition = -0.8; //left servo close angle
     private static final double rsClosePosition = 0.8; //right servo close angle
-    public static final int inmsConversion = 40; //conversion rate for centimeters to milliseconds | forward/backward movement
-    public static final int inmsConversionStrafe = 35; //conversion rate for centimeters to milliseconds | left/right movement
-    public static final int dgmsConversion = 40; //conversion rate for degrees to milliseconds
+    public static final int inmsConversion = 31
+
+            ; //conversion rate for centimeters to milliseconds | forward/backward movement
+    public static final int inmsConversionStrafe = 25; //conversion rate for centimeters to milliseconds | left/right movement
+    public static final int dgmsConversion = 36; //conversion rate for degrees to milliseconds
     public static final double powerMovementConstant = 0.5; //power value when robot is set to move forward or backward
     public static final double powerStrafeConstant = 0.8; //power value when robot is set to strafe left or right
     public static double powerRotateConstant = 0.2; //power value when robot is set to rotate
@@ -56,24 +58,25 @@ public class BlueAuto extends LinearOpMode {
     public int dgToMs(int degrees) { return degrees * dgmsConversion; } //converts degrees to milliseconds
 
     public void angleServoDown() {
-        angleServo1.setPosition(0.965); //sets angle servo down to place pixel on floor
-        angleServo2.setPosition(-1.00);
-        sleep(500);
+        angleServo1.setPosition(-0.99);
+        angleServo2.setPosition(1);
+        sleep(2000);
     }
 
     public void angleServoUp() {
-        angleServo1.setPosition(-1.00); //sets angle servo up to place pixel on board
-        angleServo2.setPosition(1.00);
+        angleServo1.setPosition(1.00);
+        angleServo2.setPosition(-0.99);
+        sleep(2000);
     }
 
     public void releaseFirstPixel() {
         rightServo.setPosition(rsOpenPosition);
-        sleep(500);
+        sleep(1000);
     }
 
     public void releaseSecondPixel() {
         leftServo.setPosition(lsOpenPosition);
-        sleep(500);
+        sleep(1000);
     }
 
     public void stopMovement(int milliseconds) {
@@ -160,58 +163,27 @@ public class BlueAuto extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        Arm.setPower(0.09);
-        moveForward(16); //move forward to get a better view of the first line
-        stopMovement(200);
+        //add start move forward code here
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         currentRecognitions = tfod.getRecognitions();
         telemetry.addData("Recs", currentRecognitions);
         telemetry.update();
 
-        if (currentRecognitions.size() != 0) {
-            moveForward(12);
-            moveBackward(8); //move forward then backward to push the object out of the way (just incase)
-            angleServoDown();
-            releaseFirstPixel();
 
-            Arm.setPower(0.89); //lift arm up
-            rotate(90);
-            moveBackward(12);
-            angleServoUp();
-            releaseSecondPixel();
-            Arm.setPower(0);
-
-            strafeRight(8);
-            moveBackward(10);
-
-        } else {
-            moveForward(2);
-            rotate(90); //slightly move forward, then rotate 90 degrees to the right, then move backwards to get a clear view
-            moveBackward(8);
-
-            currentRecognitions = tfod.getRecognitions();
-            telemetry.addData("Recs", currentRecognitions);
-            telemetry.update();
-            sleep(500);
-
-            if (currentRecognitions.size() != 0) {
-                moveForward(4); //move forward, then place the pixel
-                angleServoDown();
-                releaseFirstPixel();
+        rotate(-90);
 
 
-            } else {
 
-                moveForward(6); //move all the way forward, turn around, place the pixel
-                rotate(180);
-                angleServoDown();
-                releaseFirstPixel();
+        leftF.setPower(0); //stops robot
+        leftB.setPower(0);
+        rightB.setPower(0);
+        rightF.setPower(0);
+        sleep(2000);
 
-            }
+        //stopMovement(2000);
 
 
-        }
 
 
 
@@ -300,4 +272,49 @@ public class BlueAuto extends LinearOpMode {
 
 }
 
+/* if (currentRecognitions.size() != 0) {
+            moveForward(12);
+            moveBackward(8); //move forward then backward to push the object out of the way (just incase)
+            angleServoDown();
+            releaseFirstPixel();
 
+            Arm.setPower(0.89); //lift arm up
+            rotate(90);
+            moveBackward(12);
+            angleServoUp();
+            releaseSecondPixel();
+            Arm.setPower(0);
+
+            strafeRight(8);
+            moveBackward(10);
+
+        } else {
+            moveForward(2);
+            rotate(90); //slightly move forward, then rotate 90 degrees to the right, then move backwards to get a clear view
+            moveBackward(8);
+
+            currentRecognitions = tfod.getRecognitions();
+            telemetry.addData("Recs", currentRecognitions);
+            telemetry.update();
+            sleep(500);
+
+            if (currentRecognitions.size() != 0) {
+                moveForward(4); //move forward, then place the pixel
+                angleServoDown();
+                releaseFirstPixel();
+
+
+            } else {
+
+                moveForward(6); //move all the way forward, turn around, place the pixel
+                rotate(180);
+                angleServoDown();
+                releaseFirstPixel();
+
+            }
+
+
+        }
+
+
+ */
