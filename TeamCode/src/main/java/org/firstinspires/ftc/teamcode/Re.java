@@ -130,12 +130,12 @@ public class Re extends LinearOpMode {
 
     public void releaseFirstPixel() {
         rightServo.setPosition(0.3);
-        sleep(500);
+        sleep(1000);
     }
 
     public void releaseSecondPixel() {
         leftServo.setPosition(0.3);
-        sleep(500);
+        sleep(1000);
     }
     @Override
     public void runOpMode() {
@@ -248,7 +248,10 @@ public class Re extends LinearOpMode {
 
                     //moveForwardBackward(1000, -0.2);
 
-                    moveLeftRight(2500, 0.4);
+                    moveLeftRight(2500, -0.4);
+                    angleServoDown();
+                    releaseFirstPixel();
+                    releaseSecondPixel();
 
                     break;
                 }
@@ -286,7 +289,7 @@ public class Re extends LinearOpMode {
                     sleep(1500);
                     Arm.setPower(0.09);
                     rotateClockwise(1500, -0.2);
-                    moveForwardBackward(1000, -0.2);
+                    moveForwardBackward(1000, .2);
 
                     moveLeftRight(2500, 0.4);
 

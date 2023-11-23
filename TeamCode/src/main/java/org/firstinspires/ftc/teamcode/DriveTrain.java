@@ -120,6 +120,7 @@ public class DriveTrain extends OpMode {
             LF.setPower(0.4);
         }
 
+
         //arm motor controls
         if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
             Arm.setPower(0.15);
@@ -127,6 +128,11 @@ public class DriveTrain extends OpMode {
         if (gamepad2.right_trigger == 1) {
             Arm.setPower(0.55);
         }
+        if (gamepad2.dpad_up) {
+            Arm.setPower(1.00);
+
+        }
+
         if (gamepad2.left_trigger == 1) {
             Arm.setPower(-0.35);
         }

@@ -63,13 +63,56 @@ public class workingauto23red extends LinearOpMode {
     DcMotor leftB;
     DcMotor rightF;
     DcMotor rightB;
-
     DcMotor Arm;
-
-    //DistanceSensor distanceSensor;
-    Servo angleServo;
+    Servo angleServo1;
+    Servo angleServo2;
     Servo rightServo;
     Servo leftServo;
+
+    private static final double rsOpenPosition = 0.3;
+    private static final double lsOpenPosition = 0.3;
+    private static final double lsClosePosition = -0.8; //left servo close angle
+    private static final double rsClosePosition = 0.8; //right servo close angle
+    public static final int inmsConversion = 31; //conversion rate for centimeters to milliseconds | forward/backward movement
+    public static final int inmsConversionStrafe = 25; //conversion rate for centimeters to milliseconds | left/right movement
+    public static final int dgmsConversion = 36; //conversion rate for degrees to milliseconds
+    public static final double powerMovementConstant = 0.5; //power value when robot is set to move forward or backward
+    public static final double powerStrafeConstant = 0.8; //power value when robot is set to strafe left or right
+    public static double powerRotateConstant = 0.2; //power value when robot is set to rotate
+
+    public int inToMs(int inches) {
+        return inches * inmsConversion;
+    } //converts centimeters to milliseconds for forward and backward movements
+
+    public int inToMsStrafe(int inches) {
+        return inches * inmsConversionStrafe;
+    } //converts centimeters to milliseconds for side to side movements
+
+    public int dgToMs(int degrees) {
+        return degrees * dgmsConversion;
+    } //converts degrees to milliseconds
+
+    public void angleServoDown() {
+        angleServo1.setPosition(-0.99);
+        angleServo2.setPosition(1);
+        sleep(2500);
+    }
+
+    public void angleServoUp() {
+        angleServo1.setPosition(1.00);
+        angleServo2.setPosition(-0.99);
+        sleep(3000);
+    }
+
+    public void releaseFirstPixel() {
+        rightServo.setPosition(rsOpenPosition);
+        sleep(1000);
+    }
+
+    public void releaseSecondPixel() {
+        leftServo.setPosition(lsOpenPosition);
+        sleep(1000);
+    }
 /*
 
     DcMotor arm = hardwareMap.get(DcMotor.class, "Arm_Motor");
@@ -101,12 +144,13 @@ public class workingauto23red extends LinearOpMode {
         rightF = hardwareMap.dcMotor.get("Right_Front_Motor");
         rightB = hardwareMap.dcMotor.get("Right_Back_Motor");
         Arm = hardwareMap.dcMotor.get("Arm_Motor");
-        angleServo = hardwareMap.get(Servo.class, "servo1");
+        angleServo1 = hardwareMap.get(Servo.class, "servo1");
+        angleServo2 = hardwareMap.get(Servo.class, "servo5");
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
         leftServo.setPosition(-0.8);
         rightServo.setPosition(0.8);
-        Arm.setPower(0.09);
+        Arm.setPower(0.15);
         initTfod();
 
         // Wait for the DS start button to be touched.
@@ -117,7 +161,6 @@ public class workingauto23red extends LinearOpMode {
 
         waitForStart();
 
-        //if (opModeIsActive()) {
         while (opModeIsActive()) {
             //INTIALIZE SERVOS TO BE ON SO THE PIXEL DOESN'T COME OFF
             Arm.setPower(0.09);
@@ -137,7 +180,7 @@ public class workingauto23red extends LinearOpMode {
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
 //5700
-            if(currentRecognitions.size() != 0){
+            if (currentRecognitions.size() != 0) {
                 leftF.setPower(-0.2);
                 leftB.setPower(-0.2);
                 rightB.setPower(0.2);
@@ -149,7 +192,7 @@ public class workingauto23red extends LinearOpMode {
                 rightF.setPower(0);
                 sleep(500);
                 Arm.setPower(0.15);
-                angleServo.setPosition(0.98);
+                angleServoDown();
                 sleep(3000);
                 leftF.setPower(-0.2);
                 leftB.setPower(-0.2);
@@ -160,12 +203,10 @@ public class workingauto23red extends LinearOpMode {
                 leftB.setPower(0);
                 rightB.setPower(0);
                 rightF.setPower(0);
-                leftServo.setPosition(0.3);
-                rightServo.setPosition(0.3);
+                releaseFirstPixel();
                 sleep(500);
                 break;
-            }
-            else{
+            } else {
                 //FIX THIS ROTATION, THEN HAVE THE ROBOT DRIVE FORWARD AND PUT THE PIXEL DOWN
                 leftF.setPower(-0.2);
                 leftB.setPower(-0.2);
@@ -193,7 +234,7 @@ public class workingauto23red extends LinearOpMode {
                 telemetry.addData("Recs", currentRecognitions);
                 telemetry.update();
                 sleep(500);
-                if (currentRecognitions.size()!= 0){
+                if (currentRecognitions.size() != 0) {
                     //leftF.setPower(-0.2);
                     //leftB.setPower(-0.2);
                     //rightB.setPower(0.2);
@@ -205,7 +246,7 @@ public class workingauto23red extends LinearOpMode {
                     rightF.setPower(0);
                     sleep(500);
                     Arm.setPower(0.15);
-                    angleServo.setPosition(0.98);
+                    angleServoDown();
                     sleep(3000);
                     leftF.setPower(-0.2);
                     leftB.setPower(-0.2);
@@ -217,13 +258,11 @@ public class workingauto23red extends LinearOpMode {
                     rightB.setPower(0);
                     rightF.setPower(0);
                     sleep(500);
-                    leftServo.setPosition(0.3);
-                    rightServo.setPosition(0.3);
+                    releaseFirstPixel();
                     sleep(500);
 
                     break;
-                }
-                else {
+                } else {
                     sleep(500);
                     leftB.setPower(0.2);
                     leftF.setPower(0.2);
@@ -250,7 +289,7 @@ public class workingauto23red extends LinearOpMode {
                     rightF.setPower(0);
                     sleep(500);
                     Arm.setPower(0.15);
-                    angleServo.setPosition(0.98);
+                    angleServoDown();
                     sleep(3000);
                     leftF.setPower(-0.2);
                     leftB.setPower(-0.2);
@@ -262,117 +301,109 @@ public class workingauto23red extends LinearOpMode {
                     leftB.setPower(0);
                     rightB.setPower(0);
                     rightF.setPower(0);
-                    leftServo.setPosition(0.3);
-                    rightServo.setPosition(0.3);
+                    releaseFirstPixel();
                     sleep(500);
                     break;
                 }
 
             }
 
-            // Push telemetry to the Driver Station.
-
-                /*// Save CPU resources; can resume streaming when needed.
-                if (gamepad1.dpad_down) {
-                    visionPortal.stopStreaming();
-                } else if (gamepad1.dpad_up) {
-                    visionPortal.resumeStreaming();
-                }
-
-                // Share the CPU.
-                sleep(20);*/
         }
     }
 
-    // Save more CPU resources when camera is no longer needed.
-    //visionPortal.close();
 
-    // }   // end runOpMode()
+        // Save more CPU resources when camera is no longer needed.
+        //visionPortal.close();
 
-    /**
-     * Initialize the TensorFlow Object Detection processor.
-     */
-    private void initTfod() {
+        // }   // end runOpMode()
 
-        // Create the TensorFlow processor by using a builder.
-        tfod = new TfodProcessor.Builder()
+        /**
+         * Initialize the TensorFlow Object Detection processor.
+         */
+        private void initTfod () {
 
-                // With the following lines commented out, the default TfodProcessor Builder
-                // will load the default model for the season. To define a custom model to load,
-                // choose one of the following:
-                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
-                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                .setModelAssetName(TFOD_MODEL_ASSET)
-                //.setModelFileName(TFOD_MODEL_FILE)
+            // Create the TensorFlow processor by using a builder.
+            tfod = new TfodProcessor.Builder()
 
-                // The following default settings are available to un-comment and edit as needed to
-                // set parameters for custom models.
-                .setModelLabels(LABELS)
-                //.setIsModelTensorFlow2(true)
-                //.setIsModelQuantized(true)
-                //.setModelInputSize(300)
-                //.setModelAspectRatio(16.0 / 9.0)
+                    // With the following lines commented out, the default TfodProcessor Builder
+                    // will load the default model for the season. To define a custom model to load,
+                    // choose one of the following:
+                    //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
+                    //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
+                    .setModelAssetName(TFOD_MODEL_ASSET)
+                    //.setModelFileName(TFOD_MODEL_FILE)
 
-                .build();
+                    // The following default settings are available to un-comment and edit as needed to
+                    // set parameters for custom models.
+                    .setModelLabels(LABELS)
+                    //.setIsModelTensorFlow2(true)
+                    //.setIsModelQuantized(true)
+                    //.setModelInputSize(300)
+                    //.setModelAspectRatio(16.0 / 9.0)
 
-        // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
+                    .build();
 
-        // Set the camera (webcam vs. built-in RC phone camera).
-        if (USE_WEBCAM) {
-            builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        } else {
-            builder.setCamera(BuiltinCameraDirection.BACK);
-        }
+            // Create the vision portal by using a builder.
+            VisionPortal.Builder builder = new VisionPortal.Builder();
 
-        // Choose a camera resolution. Not all cameras support all resolutions.
-        //builder.setCameraResolution(new Size(640, 480));
+            // Set the camera (webcam vs. built-in RC phone camera).
+            if (USE_WEBCAM) {
+                builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+            } else {
+                builder.setCamera(BuiltinCameraDirection.BACK);
+            }
 
-        // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        //builder.enableLiveView(true);
+            // Choose a camera resolution. Not all cameras support all resolutions.
+            //builder.setCameraResolution(new Size(640, 480));
 
-        // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
+            // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
+            //builder.enableLiveView(true);
 
-        // Choose whether or not LiveView stops if no processors are enabled.
-        // If set "true", monitor shows solid orange screen if no processors enabled.
-        // If set "false", monitor shows camera view without annotations.
-        //builder.setAutoStopLiveView(false);
+            // Set the stream format; MJPEG uses less bandwidth than default YUY2.
+            //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
 
-        // Set and enable the processor.
-        builder.addProcessor(tfod);
+            // Choose whether or not LiveView stops if no processors are enabled.
+            // If set "true", monitor shows solid orange screen if no processors enabled.
+            // If set "false", monitor shows camera view without annotations.
+            //builder.setAutoStopLiveView(false);
 
-        // Build the Vision Portal, using the above settings.
-        visionPortal = builder.build();
+            // Set and enable the processor.
+            builder.addProcessor(tfod);
 
-        // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.65f);
+            // Build the Vision Portal, using the above settings.
+            visionPortal = builder.build();
 
-        // Disable or re-enable the TFOD processor at any time.
-        //visionPortal.setProcessorEnabled(tfod, true);
+            // Set confidence threshold for TFOD recognitions, at any time.
+            tfod.setMinResultConfidence(0.65f);
 
-    }   // end method initTfod()
+            // Disable or re-enable the TFOD processor at any time.
+            //visionPortal.setProcessorEnabled(tfod, true);
 
-    /**
-     * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
-    private List<Recognition> telemetryTfod() {
+        }   // end method initTfod()
 
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        telemetry.addData("# Objects Detected", currentRecognitions.size());
+        /**
+         * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
+         */
+        private List<Recognition> telemetryTfod () {
 
-        // Step through the list of recognitions and display info for each one.
-        for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+            List<Recognition> currentRecognitions = tfod.getRecognitions();
+            telemetry.addData("# Objects Detected", currentRecognitions.size());
 
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-        }   // end for() loop
-        return currentRecognitions;
-    }   // end method telemetryTfod()
+            // Step through the list of recognitions and display info for each one.
+            for (Recognition recognition : currentRecognitions) {
+                double x = (recognition.getLeft() + recognition.getRight()) / 2;
+                double y = (recognition.getTop() + recognition.getBottom()) / 2;
 
-}   // end class
+                telemetry.addData("", " ");
+                telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+                telemetry.addData("- Position", "%.0f / %.0f", x, y);
+                telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+            }   // end for() loop
+            return currentRecognitions;
+        }   // end method telemetryTfod()
+
+
+}
+
+// end class
 
