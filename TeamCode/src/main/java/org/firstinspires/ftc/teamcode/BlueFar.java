@@ -13,8 +13,8 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "EncoderTestCode")
-public class EncoderTest extends LinearOpMode {
+@Autonomous(name = "BlueAutoFar")
+public class BlueFar extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static final String TFOD_MODEL_ASSET = "model_20231018_181921.tflite";
@@ -44,11 +44,9 @@ public class EncoderTest extends LinearOpMode {
     public static final double powerStrafeConstant = 0.5; //power value when robot is set to strafe left or right
     public static double powerRotateConstant = 0.3; //power value when robot is set to rotate
     public static double revstoInchesSB = (double) 1000/ (double) 23;
-    public static double inchesToRevsSB = Math.pow(revstoInchesSB, -1);
     public static double revstoInchesStrafe = (double) 1000/ (double) 20;
-    public static double inchesToRevsStrafe = Math.pow(revstoInchesStrafe, -1);
-    public static double revstoInchesRotate = (double) 1000/ (double) 23;
-    public static double inchesToRevsRotate = Math.pow(revstoInchesRotate, -1);
+    public static double revstoDegreesRotate = (double) 1100/ (double) 90;
+
 
     public double convertInchestoRevsSB(double inches){
         return inches * revstoInchesSB;
@@ -58,7 +56,7 @@ public class EncoderTest extends LinearOpMode {
     }
 
     public double convertInchestoRevsRotate(double inches){
-        return inches * revstoInchesRotate;
+        return inches * revstoDegreesRotate;
     }
     public void hold() {
         while (leftB.isBusy()) {
@@ -67,14 +65,14 @@ public class EncoderTest extends LinearOpMode {
         stopMovement(100);
     }
     public void angleServoDown() {
-        angleServo1.setPosition(0.965); //sets angle servo down to place pixel on floor
-        angleServo2.setPosition(-1.00);
-        sleep(1500);
+        angleServo1.setPosition(-0.99);
+        angleServo2.setPosition(1);
+        sleep(2500);
     }
 
     public void angleServoUp() {
-        angleServo1.setPosition(-1.00); //sets angle servo up to place pixel on board
-        angleServo2.setPosition(1.00);
+        angleServo1.setPosition(1.00);
+        angleServo2.setPosition(-0.99);
         sleep(2500);
     }
 
@@ -190,10 +188,9 @@ public class EncoderTest extends LinearOpMode {
         hold();
     }
 
-    public void rotate(double inches) {
-        int revs = (int) Math.round(convertInchestoRevsRotate(inches));
+    public void rotate(double degrees) {
+        int revs = (int) Math.round(convertInchestoRevsRotate(degrees));
         resetMotors();
-
         leftF.setTargetPosition(revs);
         leftB.setTargetPosition(revs);
         rightB.setTargetPosition(revs);
@@ -228,9 +225,9 @@ public class EncoderTest extends LinearOpMode {
         angleServo2 = hardwareMap.get(Servo.class, "servo5");
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
-        leftServo.setPosition(1); //fix later
-        rightServo.setPosition(1); //fix later
-        Arm.setPower(0.09);
+        leftServo.setPosition(-1);
+        rightServo.setPosition(0.75);
+        Arm.setPower(0.153);
         initTfod();
 
         // Wait for the DS start button to be touched.
@@ -240,22 +237,59 @@ public class EncoderTest extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        strafeRight(10);
-
-
+        moveForward(12);
+        stopMovement(1000);
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         currentRecognitions = tfod.getRecognitions();
         telemetry.addData("Recs", currentRecognitions);
         telemetry.update();
 
+        if (currentRecognitions.size() != 0) {
+            angleServoDown();
+            moveForward(13);
+            releaseFirstPixel();
+            stopMovement(2000);
+            rotate(45);
+            strafeRight(6);
+            moveBackward(84);
+            Arm.setPower(0.5);
+            sleep(1500);
+            angleServoUp();
+            releaseSecondPixel();
 
+        }
+        else {
+            moveForward(6);
+            rotate(-40);
+            stopMovement(2000);
 
+            currentRecognitions = tfod.getRecognitions();
+            telemetry.addData("Recs", currentRecognitions);
+            telemetry.update();
 
+            if (currentRecognitions.size() != 0) {
+                moveBackward(3);
+                angleServoDown();
+                moveForward(7);
+                releaseFirstPixel();
+                moveBackward(4);
+                rotate(135);
+                moveBackward(84);
+                Arm.setPower(0.5);
+                stopMovement(1500);
+                angleServoUp();
+                releaseSecondPixel();
+            }
+            else {
+                angleServoDown();
+                rotate(85);
+                moveForward(4);
+                stopMovement(2000);
+                releaseFirstPixel();
 
-
-
-    }
+            }
+        }   }
 
     private void initTfod() {
 

@@ -13,13 +13,13 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "NewAutoTestCode")
-public class BlueAuto extends LinearOpMode {
+@Autonomous(name = "RedAutoClose")
+public class RedClose extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-    private static final String TFOD_MODEL_ASSET = "model_20231018_181921.tflite";
+    private static final String TFOD_MODEL_ASSET = "model_20231027_204348.tflite";
     private static final String[] LABELS = {
-            "team object",
+            "red_object",
     };
     private TfodProcessor tfod;
 
@@ -40,23 +40,30 @@ public class BlueAuto extends LinearOpMode {
 
     private static final double rsOpenPosition = 0.3;
     private static final double lsOpenPosition = 0.3;
-    private static final double lsClosePosition = -0.8; //left servo close angle
-    private static final double rsClosePosition = 0.8; //right servo close angle
-    public static final int inmsConversion = 31
+    public static final double powerMovementConstant = 0.3; //power value when robot is set to move forward or backward
+    public static final double powerStrafeConstant = 0.5; //power value when robot is set to strafe left or right
+    public static double powerRotateConstant = 0.3; //power value when robot is set to rotate
+    public static double revstoInchesSB = (double) 1000/ (double) 23;
+    public static double revstoInchesStrafe = (double) 1000/ (double) 20;
+    public static double revstoDegreesRotate = (double) 1100/ (double) 90;
 
-            ; //conversion rate for centimeters to milliseconds | forward/backward movement
-    public static final int inmsConversionStrafe = 25; //conversion rate for centimeters to milliseconds | left/right movement
-    public static final int dgmsConversion = 36; //conversion rate for degrees to milliseconds
-    public static final double powerMovementConstant = 0.5; //power value when robot is set to move forward or backward
-    public static final double powerStrafeConstant = 0.8; //power value when robot is set to strafe left or right
-    public static double powerRotateConstant = 0.2; //power value when robot is set to rotate
 
-    public int inToMs(int inches) { return inches * inmsConversion; } //converts centimeters to milliseconds for forward and backward movements
+    public double convertInchestoRevsSB(double inches){
+        return inches * revstoInchesSB;
+    }
+    public double convertInchestoRevsStrafe(double inches){
+        return inches * revstoInchesStrafe;
+    }
 
-    public int inToMsStrafe(int inches) { return inches * inmsConversionStrafe; } //converts centimeters to milliseconds for side to side movements
-
-    public int dgToMs(int degrees) { return degrees * dgmsConversion; } //converts degrees to milliseconds
-
+    public double convertInchestoRevsRotate(double inches){
+        return inches * revstoDegreesRotate;
+    }
+    public void hold() {
+        while (leftB.isBusy()) {
+            idle();
+        }
+        stopMovement(100);
+    }
     public void angleServoDown() {
         angleServo1.setPosition(-0.99);
         angleServo2.setPosition(1);
@@ -66,7 +73,7 @@ public class BlueAuto extends LinearOpMode {
     public void angleServoUp() {
         angleServo1.setPosition(1.00);
         angleServo2.setPosition(-0.99);
-        sleep(3000);
+        sleep(2500);
     }
 
     public void releaseFirstPixel() {
@@ -84,47 +91,114 @@ public class BlueAuto extends LinearOpMode {
         leftB.setPower(0);
         rightB.setPower(0);
         rightF.setPower(0);
-        sleep(milliseconds+500);
+        sleep(milliseconds);
     }
 
-    public void moveForward(int inches) {
-        leftF.setPower(-powerMovementConstant); //moves robot forward based on input (centimeters)
+    public void initMotors() {
+        leftF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void resetMotors() {
+        leftF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void runToPosition() {
+        leftF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void moveForward(double inches) {
+        int revs = (int) Math.round(convertInchestoRevsSB(inches));
+        resetMotors();
+
+        leftF.setTargetPosition(-revs);
+        leftB.setTargetPosition(-revs);
+        rightB.setTargetPosition(revs);
+        rightF.setTargetPosition(revs);
+
+        runToPosition();
+
+        leftF.setPower(-powerMovementConstant); //moves robot forward based on input (inches)
         leftB.setPower(-powerMovementConstant);
         rightB.setPower(powerMovementConstant);
         rightF.setPower(powerMovementConstant);
-        sleep(inToMs(inches)+250);
-        stopMovement(1);
+        hold();
     }
 
-    public void moveBackward(int inches) {
-        leftF.setPower(powerMovementConstant); //moves robot backwards based on input (centimeters)
+    public void moveBackward(double inches) {
+        int revs = (int) Math.round(convertInchestoRevsSB(inches));
+        resetMotors();
+
+        leftF.setTargetPosition(revs);
+        leftB.setTargetPosition(revs);
+        rightB.setTargetPosition(-revs);
+        rightF.setTargetPosition(-revs);
+
+        runToPosition();
+
+        leftF.setPower(powerMovementConstant); //moves robot backwards based on input (inches)
         leftB.setPower(powerMovementConstant);
         rightB.setPower(-powerMovementConstant);
         rightF.setPower(-powerMovementConstant);
-        sleep(inToMs(inches)+250);
-        stopMovement(1);
+
+        hold();
     }
-    public void strafeRight(int inches) {
-        leftF.setPower(-powerStrafeConstant); //moves robot right based on input (centimeters)
+    public void strafeRight(double inches) {
+        int revs = (int) Math.round(convertInchestoRevsStrafe(inches));
+        resetMotors();
+        leftF.setTargetPosition(-revs);
+        leftB.setTargetPosition(revs);
+        rightB.setTargetPosition(revs);
+        rightF.setTargetPosition(-revs);
+
+        runToPosition();
+
+        leftF.setPower(-powerStrafeConstant); //moves robot right based on input (inches)
         leftB.setPower(powerStrafeConstant);
         rightB.setPower(powerStrafeConstant);
         rightF.setPower(-powerStrafeConstant);
-        sleep(inToMsStrafe(inches)+500);
-        stopMovement(1);
+
+        hold();
     }
 
-    public void strafeLeft(int inches) {
-        leftF.setPower(powerStrafeConstant); //moves robot left based on input (centimeters)
+    public void strafeLeft(double inches) {
+        int revs = (int) Math.round(convertInchestoRevsStrafe(inches));
+        resetMotors();
+
+        leftF.setTargetPosition(revs);
+        leftB.setTargetPosition(-revs);
+        rightB.setTargetPosition(-revs);
+        rightF.setTargetPosition(revs);
+
+        runToPosition();
+
+        leftF.setPower(powerStrafeConstant); //moves robot left based on input (inches)
         leftB.setPower(-powerStrafeConstant);
         rightB.setPower(-powerStrafeConstant);
         rightF.setPower(powerStrafeConstant);
-        sleep(inToMsStrafe(inches)+500);
-        stopMovement(1);
+
+        hold();
     }
 
-    public void rotate(int degrees) {
+    public void rotate(double degrees) {
+        int revs = (int) Math.round(convertInchestoRevsRotate(degrees));
+        resetMotors();
+        leftF.setTargetPosition(revs);
+        leftB.setTargetPosition(revs);
+        rightB.setTargetPosition(revs);
+        rightF.setTargetPosition(revs);
 
-        if (degrees >0) {
+        runToPosition();
+
+        if (revs < 0) {
             powerRotateConstant*=-1;
         }
 
@@ -132,13 +206,13 @@ public class BlueAuto extends LinearOpMode {
         leftB.setPower(powerRotateConstant);
         rightB.setPower(powerRotateConstant);
         rightF.setPower(powerRotateConstant);
-        sleep(dgToMs(Math.abs(degrees))+500);
 
-        if (degrees > 0) {
+        if (revs < 0) {
             powerRotateConstant*=-1;
         }
 
-        stopMovement(1);
+
+        hold();
     }
     @Override
     public void runOpMode() {
@@ -151,9 +225,9 @@ public class BlueAuto extends LinearOpMode {
         angleServo2 = hardwareMap.get(Servo.class, "servo5");
         rightServo = hardwareMap.get(Servo.class, "servo2");
         leftServo = hardwareMap.get(Servo.class, "servo3");
-        leftServo.setPosition(lsClosePosition);
-        rightServo.setPosition(rsClosePosition);
-        Arm.setPower(0.09);
+        leftServo.setPosition(-1);
+        rightServo.setPosition(0.75);
+        Arm.setPower(0.153);
         initTfod();
 
         // Wait for the DS start button to be touched.
@@ -164,7 +238,6 @@ public class BlueAuto extends LinearOpMode {
         waitForStart();
 
         moveForward(12);
-
         stopMovement(2000);
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -174,80 +247,66 @@ public class BlueAuto extends LinearOpMode {
 
         if (currentRecognitions.size() != 0) {
             angleServoDown();
-            moveForward(6);
+            moveForward(13);
             releaseFirstPixel();
-            stopMovement(1000);
-            Arm.setPower(0.89);
-
-            rotate(90);
-            moveBackward(30);
+            Arm.setPower(0.5);
+            sleep(2000);
             angleServoUp();
+            moveBackward(2);
+            rotate(90);
+            moveBackward(42);
             releaseSecondPixel();
 
-        } else {
-            rotate(45);
-
-            currentRecognitions = tfod.getRecognitions();
+        }
+        else {
+            moveForward(6);
+            rotate(-40);
+            stopMovement(2000);            currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
-            stopMovement(2000);
-
             if (currentRecognitions.size() != 0) {
-                //moveForward(1); //move forward, then place the pixel
+                strafeRight(10);
                 angleServoDown();
-                releaseFirstPixel();
-                angleServoUp();
-                Arm.setPower(0.89);
-
-                moveBackward(2);
-                rotate(45);
-
-                strafeRight(2);
-                moveBackward(30);
-                Arm.setPower(0.89);
-                angleServoUp();
-                releaseSecondPixel();
-
-
-
-            } else {
-
-                strafeRight(2);
-                rotate(-45);
-                moveForward(5);
-                angleServoDown();
-                releaseFirstPixel();
-                angleServoUp();
-                Arm.setPower(0.89);
-
-                moveBackward(5);
-                rotate(45);
-                strafeLeft(2);
+                strafeLeft(10);
                 moveForward(4);
-                rotate(90);
-                moveBackward(30);
-                Arm.setPower(0.89);
+
+                releaseFirstPixel();
                 angleServoUp();
+                rotate(45);
+                moveBackward(10);
+                strafeRight(20);
+                rotate(90);
+                strafeRight(10);
+                moveBackward(20);
+                Arm.setPower(0.5);
+                sleep(1500);
+                strafeLeft(2);
                 releaseSecondPixel();
-
             }
-
-
-        }
-
-
-
-        stopMovement(2000);
-
-        //stopMovement(2000);
-
-
-
-
-
-
-
-    }
+            else {
+                Arm.setPower(0.23);
+                angleServoDown();
+                Arm.setPower(0.153);
+                rotate(85);
+                moveForward(4);
+                stopMovement(2000);
+                releaseFirstPixel();
+                Arm.setPower(0.8);
+                sleep(300);
+                Arm.setPower(0.153);
+                stopMovement(500);
+                moveBackward(4);
+                angleServoUp();
+                rotate(50);
+                strafeRight(6);
+                moveBackward(20);
+                strafeRight(3);
+                moveBackward(19);
+                Arm.setPower(0.5);
+                sleep(1500);
+                releaseSecondPixel();
+            }
+        }   }
 
     private void initTfod() {
 
@@ -257,7 +316,7 @@ public class BlueAuto extends LinearOpMode {
                 // With the following lines commented out, the default TfodProcessor Builder
                 // will load the default model for the season. To define a custom model to load,
                 // choose one of the following:
-                //   Use setModelAsse-tName() if the custom TF Model is built in as an asset (AS only).
+                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
                 //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
                 .setModelAssetName(TFOD_MODEL_ASSET)
                 //.setModelFileName(TFOD_MODEL_FILE)
@@ -330,7 +389,4 @@ public class BlueAuto extends LinearOpMode {
 
 }
 
-/*+
 
-
- */
