@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Main")
@@ -29,7 +30,10 @@ public class Base extends OpMode {
         Actuator = hardwareMap.dcMotor.get("Actuator_Motor");
 
         planeServo.setPosition(0);
-        Arm.setPower(0.15);
+        Arm.setPower(0.2);
+
+        RF.setDirection(DcMotorSimple.Direction.REVERSE);
+        RB.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
     }
@@ -41,8 +45,8 @@ public class Base extends OpMode {
         telemetry.update();
 
         double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
-        double rx = gamepad1.right_stick_x;
+        double x = -gamepad1.left_stick_x * 1.1;
+        double rx = -gamepad1.right_stick_x*0.7;
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
@@ -50,10 +54,10 @@ public class Base extends OpMode {
         double frontRightPower = (y - x - rx) / denominator;
         double backRightPower = (y + x - rx) / denominator;
 
-        LF.setPower(frontLeftPower);
-        LB.setPower(backLeftPower);
-        RF.setPower(frontRightPower);
-        RB.setPower(backRightPower);
+        LF.setPower(frontLeftPower*MOTOR_MULTIPLIER);
+        LB.setPower(backLeftPower*MOTOR_MULTIPLIER);
+        RF.setPower(frontRightPower*MOTOR_MULTIPLIER);
+        RB.setPower(backRightPower*MOTOR_MULTIPLIER);
 
         //dpad movements
         if (gamepad1.dpad_right){
@@ -98,14 +102,17 @@ public class Base extends OpMode {
 
         //arm motor controls
         if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
-            Arm.setPower(0.15);
+            Arm.setPower(0.2);
         }
         if (gamepad2.right_trigger == 1) {
             Arm.setPower(0.55);
         }
-        if (gamepad2.dpad_up) {
-            Arm.setPower(1.00);
+        if (gamepad2.right_stick_y<-0.8) {
+            Arm.setPower(-1.00);
+        }
 
+        if (gamepad2.right_stick_y>0.8) {
+            Arm.setPower(1.00);
         }
 
         if (gamepad2.left_trigger == 1) {
@@ -126,8 +133,12 @@ public class Base extends OpMode {
             leftServo.setPosition(-1);
             rightServo.setPosition(0.75);
         }
-        if (gamepad2.x) {
+        if (gamepad2.dpad_right) {
             rightServo.setPosition(0.3);
+        }
+
+        if (gamepad2.dpad_left) {
+            leftServo.setPosition(0.3);
         }
 
         if (gamepad2.left_bumper) {
@@ -140,13 +151,16 @@ public class Base extends OpMode {
             angleServo2.setPosition(-0.99);
             //servoAngle =0.00;
         }
-        if (gamepad2.x && gamepad2.dpad_right && gamepad2.dpad_left) {
+        if (gamepad2.x && gamepad2.dpad_down) {
             planeServo.setPosition(0.4);
             //servoAngle =0.00;
         }
 
-        if (gamepad2.left_stick_y!=0) {
+        if (gamepad2.left_stick_y>0.1 || gamepad2.right_trigger<-0.1) {
             Actuator.setPower(-gamepad2.left_stick_y);
+        }
+        else {
+            Actuator.setPower(0);
         }
 
         //angleServo.setPosition(servoAngle);
