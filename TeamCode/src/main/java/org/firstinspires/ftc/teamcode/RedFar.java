@@ -58,6 +58,11 @@ public class RedFar extends LinearOpMode {
     public double convertInchestoRevsRotate(double inches){
         return inches * revstoDegreesRotate;
     }
+    public void angleServoMiddle(){
+        angleServo1.setPosition(0.0);
+        angleServo2.setPosition(0.0);
+        sleep(2500);
+    }
     public void hold() {
         while (leftB.isBusy()) {
             idle();
@@ -237,8 +242,7 @@ public class RedFar extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        moveForward(12);
-        stopMovement(2000);
+        stopMovement(1000);
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         currentRecognitions = tfod.getRecognitions();
@@ -246,65 +250,59 @@ public class RedFar extends LinearOpMode {
         telemetry.update();
 
         if (currentRecognitions.size() != 0) {
+            moveForward(12);
+            Arm.setPower(0.23);
             angleServoDown();
             moveForward(13);
             releaseFirstPixel();
-            Arm.setPower(0.5);
-            sleep(2000);
-            angleServoUp();
+            sleep(100);
             moveBackward(2);
-            rotate(90);
-            moveBackward(42);
+            strafeRight(2);
+            rotate(-90);
+            strafeRight(22);
+            moveBackward(80);
+            strafeLeft(24);
+            rotate(180);
+            Arm.setPower(0.41);
+            angleServoMiddle();
+            moveForward(8);
             releaseSecondPixel();
 
         }
         else {
-            moveForward(6);
-            rotate(-40);
-            stopMovement(2000);
+            strafeLeft(6);
+            stopMovement(500);
             currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
             if (currentRecognitions.size() != 0) {
-                strafeRight(10);
                 angleServoDown();
-                strafeLeft(10);
-                moveForward(4);
-
+                moveForward(20);
                 releaseFirstPixel();
-                angleServoUp();
-                rotate(45);
-                moveBackward(10);
-                strafeRight(20);
-                rotate(90);
-                strafeRight(10);
-                moveBackward(20);
-                Arm.setPower(0.5);
-                sleep(1500);
-                strafeLeft(2);
+                stopMovement(200);
+                rotate(-90);
+                strafeLeft(22);
+                moveBackward(86);
+                strafeRight(24);
+                rotate(180);
+                Arm.setPower(0.41);
+                angleServoMiddle();
+                moveForward(8);
                 releaseSecondPixel();
             }
             else {
-                Arm.setPower(0.23);
+                rotate(90);
                 angleServoDown();
-                Arm.setPower(0.153);
-                rotate(85);
-                moveForward(4);
-                stopMovement(2000);
+                strafeLeft(20);
+                moveForward(8);
                 releaseFirstPixel();
-                Arm.setPower(0.8);
-                sleep(300);
-                Arm.setPower(0.153);
-                stopMovement(500);
                 moveBackward(4);
-                angleServoUp();
-                rotate(50);
-                strafeRight(6);
-                moveBackward(20);
-                strafeRight(3);
-                moveBackward(19);
-                Arm.setPower(0.5);
-                sleep(1500);
+                strafeRight(22);
+                moveForward(84);
+                strafeLeft(24);
+                Arm.setPower(0.41);
+                angleServoMiddle();
+                moveForward(8);
                 releaseSecondPixel();
             }
         }   }
@@ -389,5 +387,4 @@ public class RedFar extends LinearOpMode {
     }
 
 }
-
 

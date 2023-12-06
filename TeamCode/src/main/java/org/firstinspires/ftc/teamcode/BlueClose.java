@@ -298,7 +298,7 @@ public class BlueClose extends LinearOpMode {
                 strafeRight(2);
                 releaseSecondPixel();
             }
-}   }
+        }   }
 
     private void initTfod() {
 
@@ -380,5 +380,4 @@ public class BlueClose extends LinearOpMode {
     }
 
 }
-
 

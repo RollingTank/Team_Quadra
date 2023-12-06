@@ -38,26 +38,13 @@ public class BlueFar extends LinearOpMode {
     Servo rightServo;
     Servo leftServo;
 
-    private static final double rsOpenPosition = 0.3;
-    private static final double lsOpenPosition = 0.3;
+    private static final double servoOpen = 0.3;
     public static final double powerMovementConstant = 0.25; //power value when robot is set to move forward or backward
     public static final double powerStrafeConstant = 0.5; //power value when robot is set to strafe left or right
     public static double powerRotateConstant = 0.3; //power value when robot is set to rotate
     public static double revstoInchesSB = (double) 1000/ (double) 23;
     public static double revstoInchesStrafe = (double) 1000/ (double) 20;
     public static double revstoDegreesRotate = (double) 1100/ (double) 90;
-
-
-    public double convertInchestoRevsSB(double inches){
-        return inches * revstoInchesSB;
-    }
-    public double convertInchestoRevsStrafe(double inches){
-        return inches * revstoInchesStrafe;
-    }
-
-    public double convertInchestoRevsRotate(double inches){
-        return inches * revstoDegreesRotate;
-    }
     public void hold() {
         while (leftB.isBusy()) {
             idle();
@@ -81,12 +68,12 @@ public class BlueFar extends LinearOpMode {
         sleep(2500);
     }
     public void releaseFirstPixel() {
-        rightServo.setPosition(rsOpenPosition);
+        rightServo.setPosition(servoOpen);
         sleep(1000);
     }
 
     public void releaseSecondPixel() {
-        leftServo.setPosition(lsOpenPosition);
+        leftServo.setPosition(servoOpen);
         sleep(1000);
     }
 
@@ -96,13 +83,6 @@ public class BlueFar extends LinearOpMode {
         rightB.setPower(0);
         rightF.setPower(0);
         sleep(milliseconds);
-    }
-
-    public void initMotors() {
-        leftF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void resetMotors() {
@@ -120,7 +100,7 @@ public class BlueFar extends LinearOpMode {
     }
 
     public void moveForward(double inches) {
-        int revs = (int) Math.round(convertInchestoRevsSB(inches));
+        int revs = (int) Math.round(inches*revstoInchesSB);
         resetMotors();
 
         leftF.setTargetPosition(-revs);
@@ -138,7 +118,7 @@ public class BlueFar extends LinearOpMode {
     }
 
     public void moveBackward(double inches) {
-        int revs = (int) Math.round(convertInchestoRevsSB(inches));
+        int revs = (int) Math.round(inches*revstoInchesSB);
         resetMotors();
 
         leftF.setTargetPosition(revs);
@@ -156,7 +136,7 @@ public class BlueFar extends LinearOpMode {
         hold();
     }
     public void strafeRight(double inches) {
-        int revs = (int) Math.round(convertInchestoRevsStrafe(inches));
+        int revs = (int) Math.round(inches*revstoInchesStrafe);
         resetMotors();
         leftF.setTargetPosition(-revs);
         leftB.setTargetPosition(revs);
@@ -174,7 +154,7 @@ public class BlueFar extends LinearOpMode {
     }
 
     public void strafeLeft(double inches) {
-        int revs = (int) Math.round(convertInchestoRevsStrafe(inches));
+        int revs = (int) Math.round(inches*revstoInchesStrafe);
         resetMotors();
 
         leftF.setTargetPosition(revs);
@@ -193,7 +173,7 @@ public class BlueFar extends LinearOpMode {
     }
 
     public void rotate(double degrees) {
-        int revs = (int) Math.round(convertInchestoRevsRotate(degrees));
+        int revs = (int) Math.round(degrees*revstoDegreesRotate);
         resetMotors();
         leftF.setTargetPosition(revs);
         leftB.setTargetPosition(revs);
@@ -262,57 +242,46 @@ public class BlueFar extends LinearOpMode {
             moveBackward(80);
             strafeLeft(24);
             rotate(180);
-            Arm.setPower(0.39);
+            Arm.setPower(0.41);
             angleServoMiddle();
             moveForward(8);
-
-            //Arm.setPower(0.5);
-            //sleep(1900);  `
             releaseSecondPixel();
 
         }
         else {
-            moveForward(6);
-            rotate(-40);
-            stopMovement(2000);            currentRecognitions = tfod.getRecognitions();
+            strafeRight(6);
+            stopMovement(500);
+            currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
             if (currentRecognitions.size() != 0) {
-                moveBackward(3);
-                angleServoDown();
-                moveForward(7);
-                releaseFirstPixel();
-                moveBackward(2);
-                Arm.setPower(0.5);
-                sleep(100);
-                strafeLeft(2);
-                rotate(-48);
-                moveBackward(40+48);
-                angleServoUp();
-                Arm.setPower(0.5);
-                stopMovement(1900);
-                strafeLeft(4);
-                releaseSecondPixel();
+               angleServoDown();
+               moveForward(20);
+               releaseFirstPixel();
+               stopMovement(200);
+               rotate(-90);
+               strafeRight(22);
+               moveBackward(86);
+               strafeLeft(24);
+               rotate(180);
+               Arm.setPower(0.41);
+               angleServoMiddle();
+               moveForward(8);
+               releaseSecondPixel();
             }
             else {
+                rotate(90);
                 angleServoDown();
-                rotate(85);
-                moveForward(4);
-                stopMovement(2000);
+                strafeRight(20);
+                moveForward(8);
                 releaseFirstPixel();
-                Arm.setPower(0.23);
-                stopMovement(500);
-                Arm.setPower(0.5);
-                sleep(100);
-                rotate(-135);
-                strafeRight(10);
-                moveBackward(20);
-                strafeLeft(9);
-                moveBackward(20+48);
-                angleServoUp();
-                Arm.setPower(0.5);
-                sleep(1400);
-                strafeRight(2);
+                moveBackward(4);
+                strafeLeft(22);
+                moveForward(84);
+                strafeRight(24);
+                Arm.setPower(0.41);
+                angleServoMiddle();
+                moveForward(8);
                 releaseSecondPixel();
             }
         }   }
@@ -397,5 +366,4 @@ public class BlueFar extends LinearOpMode {
     }
 
 }
-
 
