@@ -261,7 +261,8 @@ public class RedFar extends LinearOpMode {
         else {
             moveForward(6);
             rotate(-40);
-            stopMovement(2000);            currentRecognitions = tfod.getRecognitions();
+            stopMovement(2000);
+            currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
             if (currentRecognitions.size() != 0) {

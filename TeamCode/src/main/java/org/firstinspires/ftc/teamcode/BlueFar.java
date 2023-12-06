@@ -40,7 +40,7 @@ public class BlueFar extends LinearOpMode {
 
     private static final double rsOpenPosition = 0.3;
     private static final double lsOpenPosition = 0.3;
-    public static final double powerMovementConstant = 0.3; //power value when robot is set to move forward or backward
+    public static final double powerMovementConstant = 0.25; //power value when robot is set to move forward or backward
     public static final double powerStrafeConstant = 0.5; //power value when robot is set to strafe left or right
     public static double powerRotateConstant = 0.3; //power value when robot is set to rotate
     public static double revstoInchesSB = (double) 1000/ (double) 23;
@@ -75,7 +75,11 @@ public class BlueFar extends LinearOpMode {
         angleServo2.setPosition(-0.99);
         sleep(2500);
     }
-
+    public void angleServoMiddle(){
+        angleServo1.setPosition(0.0);
+        angleServo2.setPosition(0.0);
+        sleep(2500);
+    }
     public void releaseFirstPixel() {
         rightServo.setPosition(rsOpenPosition);
         sleep(1000);
@@ -237,7 +241,6 @@ public class BlueFar extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        moveForward(12);
         stopMovement(1000);
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -246,39 +249,49 @@ public class BlueFar extends LinearOpMode {
         telemetry.update();
 
         if (currentRecognitions.size() != 0) {
+            moveForward(12);
+            Arm.setPower(0.23);
             angleServoDown();
             moveForward(13);
             releaseFirstPixel();
-            stopMovement(2000);
-            rotate(45);
-            strafeRight(6);
-            moveBackward(84);
-            Arm.setPower(0.5);
-            sleep(1500);
-            angleServoUp();
+            sleep(100);
+            moveBackward(2);
+            strafeRight(2);
+            rotate(-90);
+            strafeRight(22);
+            moveBackward(80);
+            strafeLeft(24);
+            rotate(180);
+            Arm.setPower(0.39);
+            angleServoMiddle();
+            moveForward(8);
+
+            //Arm.setPower(0.5);
+            //sleep(1900);  `
             releaseSecondPixel();
 
         }
         else {
             moveForward(6);
             rotate(-40);
-            stopMovement(2000);
-
-            currentRecognitions = tfod.getRecognitions();
+            stopMovement(2000);            currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
-
             if (currentRecognitions.size() != 0) {
                 moveBackward(3);
                 angleServoDown();
                 moveForward(7);
                 releaseFirstPixel();
-                moveBackward(4);
-                rotate(135);
-                moveBackward(84);
+                moveBackward(2);
                 Arm.setPower(0.5);
-                stopMovement(1500);
+                sleep(100);
+                strafeLeft(2);
+                rotate(-48);
+                moveBackward(40+48);
                 angleServoUp();
+                Arm.setPower(0.5);
+                stopMovement(1900);
+                strafeLeft(4);
                 releaseSecondPixel();
             }
             else {
@@ -287,7 +300,20 @@ public class BlueFar extends LinearOpMode {
                 moveForward(4);
                 stopMovement(2000);
                 releaseFirstPixel();
-
+                Arm.setPower(0.23);
+                stopMovement(500);
+                Arm.setPower(0.5);
+                sleep(100);
+                rotate(-135);
+                strafeRight(10);
+                moveBackward(20);
+                strafeLeft(9);
+                moveBackward(20+48);
+                angleServoUp();
+                Arm.setPower(0.5);
+                sleep(1400);
+                strafeRight(2);
+                releaseSecondPixel();
             }
         }   }
 
