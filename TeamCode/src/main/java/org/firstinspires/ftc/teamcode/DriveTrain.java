@@ -122,7 +122,7 @@ public class DriveTrain extends OpMode {
 
         //arm motor controls
         if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
-            Arm.setPower(0.15);
+            Arm.setPower(0.2);
         }
         if (gamepad2.right_trigger == 1) {
             Arm.setPower(0.55);
