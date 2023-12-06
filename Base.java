@@ -156,7 +156,7 @@ public class Base extends OpMode {
             //servoAngle =0.00;
         }
 
-        if (gamepad2.left_stick_y>0.1 || gamepad2.right_trigger<-0.1) {
+        if (gamepad2.left_stick_y>0.1 || gamepad2.left_stick_y<-0.1) {
             Actuator.setPower(-gamepad2.left_stick_y);
         }
         else {
