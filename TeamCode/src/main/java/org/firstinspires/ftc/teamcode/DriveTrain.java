@@ -24,6 +24,7 @@ public class DriveTrain extends OpMode {
     Servo planeServo;
     double servoAngle;
 
+
     @Override
     public void init() {
 
@@ -62,6 +63,7 @@ public class DriveTrain extends OpMode {
         LB.setPower(-gamepad1.right_stick_y*0.75);
         RF.setPower(gamepad1.left_stick_y*0.75);
         LF.setPower(-gamepad1.right_stick_y*0.75);
+
 
         //left
         if (gamepad1.left_stick_x > 0 && gamepad1.right_stick_x > 0){
@@ -171,6 +173,11 @@ public class DriveTrain extends OpMode {
             angleServo1.setPosition(1.00);
             angleServo2.setPosition(-0.99);
             //servoAngle =0.00;
+        }
+
+        if(gamepad2.x) {
+            angleServo1.setPosition(-0.44);
+            angleServo2.setPosition(0.45);
         }
 
         if (gamepad2.x && gamepad2.dpad_down) {
