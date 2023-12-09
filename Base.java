@@ -3,28 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "MainConfig")
-public class DriveTrain extends OpMode {
+@TeleOp(name = "Main")
+public class Base extends OpMode {
 
-    DcMotor RB;
-    DcMotor LB;
-    DcMotor RF;
-    DcMotor LF;
-    DcMotor Arm;
-    DcMotor Actuator;
+    DcMotor RB, LB, RF, LF, Arm, Actuator;
+    Servo angleServo1, angleServo2, rightServo, leftServo, planeServo;
 
-    //DistanceSensor distanceSensor;
-    Servo angleServo1;
-    Servo angleServo2;
-    Servo rightServo;
-    Servo leftServo;
-    Servo planeServo;
-    double servoAngle;
-    double powerConstant = 0.75;
-
+    public static final double MOTOR_MULTIPLIER = 0.75;
 
     @Override
     public void init() {
@@ -43,6 +31,11 @@ public class DriveTrain extends OpMode {
 
         planeServo.setPosition(0);
         Arm.setPower(0.2);
+
+        RF.setDirection(DcMotorSimple.Direction.REVERSE);
+        RB.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
     }
 
 
@@ -51,44 +44,20 @@ public class DriveTrain extends OpMode {
         telemetry.addData("Status", "Run Time: " + getRuntime());
         telemetry.update();
 
-        RB.setPower(gamepad1.left_stick_y*powerConstant);
-        LB.setPower(-gamepad1.right_stick_y*powerConstant);
-        RF.setPower(gamepad1.left_stick_y*powerConstant);
-        LF.setPower(-gamepad1.right_stick_y*powerConstant);
+        double y = -gamepad1.left_stick_y;
+        double x = -gamepad1.left_stick_x * 1.1;
+        double rx = -gamepad1.right_stick_x*0.7;
 
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
 
-        //left
-        if (gamepad1.left_stick_x > 0 && gamepad1.right_stick_x > 0){
-            LB.setPower(gamepad1.right_stick_x*powerConstant);
-            LF.setPower(-gamepad1.right_stick_x*powerConstant);
-            RB.setPower(gamepad1.left_stick_x*powerConstant);
-            RF.setPower(-gamepad1.left_stick_x*powerConstant);
-        }
-
-        //right
-        if (gamepad1.left_stick_x < 0 && gamepad1.right_stick_x < 0){
-            LB.setPower(gamepad1.right_stick_x*powerConstant);
-            LF.setPower(-gamepad1.right_stick_x*powerConstant);
-            RB.setPower(gamepad1.left_stick_x*powerConstant);
-            RF.setPower(-gamepad1.left_stick_x*powerConstant);
-        }
-
-        //Changing motor powers
-        if (gamepad1.a) {
-            powerConstant = 0.75;
-        }
-
-        if (gamepad1.b) {
-            powerConstant = 1.00;
-        }
-
-        if (gamepad1.x) {
-            powerConstant = 0.85;
-        }
-
-        if (gamepad1.y) {
-            powerConstant = 0.5;
-        }
+        LF.setPower(frontLeftPower*MOTOR_MULTIPLIER);
+        LB.setPower(backLeftPower*MOTOR_MULTIPLIER);
+        RF.setPower(frontRightPower*MOTOR_MULTIPLIER);
+        RB.setPower(backRightPower*MOTOR_MULTIPLIER);
 
         //dpad movements
         if (gamepad1.dpad_right){
@@ -138,10 +107,11 @@ public class DriveTrain extends OpMode {
         if (gamepad2.right_trigger == 1) {
             Arm.setPower(0.55);
         }
-        if (gamepad2.right_stick_y>0.8) {
+        if (gamepad2.right_stick_y<-0.8) {
             Arm.setPower(-1.00);
         }
-        if (gamepad2.right_stick_y<-0.8) {
+
+        if (gamepad2.right_stick_y>0.8) {
             Arm.setPower(1.00);
         }
 
@@ -163,7 +133,6 @@ public class DriveTrain extends OpMode {
             leftServo.setPosition(-1);
             rightServo.setPosition(0.75);
         }
-
         if (gamepad2.dpad_right) {
             rightServo.setPosition(0.3);
         }
@@ -177,23 +146,17 @@ public class DriveTrain extends OpMode {
             angleServo2.setPosition(1);
             //servoAngle = 0.1;
         }
-
         if (gamepad2.right_bumper) {
             angleServo1.setPosition(1.00);
             angleServo2.setPosition(-0.99);
             //servoAngle =0.00;
         }
-
-        if(gamepad2.x) {
-            angleServo1.setPosition(-0.44);
-            angleServo2.setPosition(0.45);
-        }
-
-        if (gamepad2.y && gamepad2.dpad_down && gamepad2.left_trigger == 1) {
+        if (gamepad2.x && gamepad2.dpad_down) {
             planeServo.setPosition(0.4);
+            //servoAngle =0.00;
         }
 
-        if (gamepad2.left_stick_y>0.1 || gamepad2.left_stick_y<-0.1) {
+        if (gamepad2.left_stick_y>0.1 || gamepad2.right_trigger<-0.1) {
             Actuator.setPower(-gamepad2.left_stick_y);
         }
         else {
