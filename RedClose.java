@@ -388,4 +388,3 @@ public class RedClose extends LinearOpMode {
     }
 
 }
-

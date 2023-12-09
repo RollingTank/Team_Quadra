@@ -59,9 +59,9 @@ public class RedFar extends LinearOpMode {
         return inches * revstoDegreesRotate;
     }
     public void angleServoMiddle(){
-        angleServo1.setPosition(0.0);
-        angleServo2.setPosition(0.0);
-        sleep(2500);
+        angleServo1.setPosition(-0.52);
+        angleServo2.setPosition(0.52);
+        sleep(1500);
     }
     public void hold() {
         while (leftB.isBusy()) {
@@ -72,23 +72,23 @@ public class RedFar extends LinearOpMode {
     public void angleServoDown() {
         angleServo1.setPosition(-0.99);
         angleServo2.setPosition(1);
-        sleep(2500);
+        sleep(1500);
     }
 
     public void angleServoUp() {
         angleServo1.setPosition(1.00);
         angleServo2.setPosition(-0.99);
-        sleep(2500);
+        sleep(1500);
     }
 
     public void releaseFirstPixel() {
         rightServo.setPosition(rsOpenPosition);
-        sleep(1000);
+        sleep(700);
     }
 
     public void releaseSecondPixel() {
         leftServo.setPosition(lsOpenPosition);
-        sleep(1000);
+        sleep(700);
     }
 
     public void stopMovement(int milliseconds) {
@@ -97,13 +97,6 @@ public class RedFar extends LinearOpMode {
         rightB.setPower(0);
         rightF.setPower(0);
         sleep(milliseconds);
-    }
-
-    public void initMotors() {
-        leftF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void resetMotors() {
@@ -232,8 +225,13 @@ public class RedFar extends LinearOpMode {
         leftServo = hardwareMap.get(Servo.class, "servo3");
         leftServo.setPosition(-1);
         rightServo.setPosition(0.75);
-        Arm.setPower(0.153);
+        Arm.setPower(0.23);
         initTfod();
+
+        rightF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -242,7 +240,6 @@ public class RedFar extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-        stopMovement(1000);
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         currentRecognitions = tfod.getRecognitions();
@@ -250,27 +247,33 @@ public class RedFar extends LinearOpMode {
         telemetry.update();
 
         if (currentRecognitions.size() != 0) {
-            moveForward(12);
+            moveForward(13);
             Arm.setPower(0.23);
             angleServoDown();
             moveForward(13);
+            moveBackward(2);
             releaseFirstPixel();
             sleep(100);
             moveBackward(2);
-            strafeRight(2);
+            strafeLeft(2);
             rotate(-90);
-            strafeRight(22);
-            moveBackward(80);
+            moveBackward(4);
+            strafeRight(19);
+            rotate(2);
+            moveForward(80);
             strafeLeft(24);
-            rotate(180);
-            Arm.setPower(0.41);
+            angleServoUp();
             angleServoMiddle();
-            moveForward(8);
+            moveForward(10);
+            strafeRight(4);
             releaseSecondPixel();
+            angleServoUp();
 
         }
         else {
-            strafeLeft(6);
+            moveForward(2);
+            strafeLeft(14);
+            sleep(1300);
             stopMovement(500);
             currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
@@ -279,31 +282,40 @@ public class RedFar extends LinearOpMode {
                 angleServoDown();
                 moveForward(20);
                 releaseFirstPixel();
+                moveBackward(4);
                 stopMovement(200);
                 rotate(-90);
-                strafeLeft(22);
-                moveBackward(86);
-                strafeRight(24);
-                rotate(180);
-                Arm.setPower(0.41);
+                strafeRight(14);
+                rotate(4);
+                moveForward(80);
+                strafeLeft(24);
+                angleServoUp();
                 angleServoMiddle();
-                moveForward(8);
+                moveForward(10);
+                strafeLeft(5);
+                moveForward(7);
                 releaseSecondPixel();
+                angleServoUp();
             }
             else {
-                rotate(90);
+                moveForward(28);
+                rotate(-90);
+                Arm.setPower(0.23);
                 angleServoDown();
-                strafeLeft(20);
-                moveForward(8);
+                moveForward(16);
+                moveBackward(2);
                 releaseFirstPixel();
-                moveBackward(4);
-                strafeRight(22);
-                moveForward(84);
-                strafeLeft(24);
-                Arm.setPower(0.41);
+                moveBackward(6);
+                strafeRight(27);
+                rotate(3);
+                moveForward(80);
+                strafeLeft(14);
+                angleServoUp();
                 angleServoMiddle();
-                moveForward(8);
+                moveForward(12);
                 releaseSecondPixel();
+                angleServoUp();
+
             }
         }   }
 
@@ -387,4 +399,3 @@ public class RedFar extends LinearOpMode {
     }
 
 }
-

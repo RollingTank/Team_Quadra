@@ -48,7 +48,7 @@ public class BlueClose extends LinearOpMode {
     public void angleServoDown() {
         angleServo1.setPosition(-0.99);
         angleServo2.setPosition(1);
-        sleep(2500);
+        sleep(1500);
     }
 
     public void angleServoUp() {
@@ -231,31 +231,38 @@ public class BlueClose extends LinearOpMode {
             angleServoUp();
             angleServoMiddle();
             rotate(90);
-            moveForward(36);
-            strafeRight(6);
+            moveForward(34);
+            strafeRight(7);
+            moveForward(2);
             releaseSecondPixel();
-            moveBackward(6);
+            moveBackward(3);
             angleServoDown();
 
         }
         else {
-            strafeLeft(8);
+            strafeLeft(11);
+            sleep(3000);
             currentRecognitions = tfod.getRecognitions();
             telemetry.addData("Recs", currentRecognitions);
             telemetry.update();
             if (currentRecognitions.size() != 0) {
+                Arm.setPower(0.23);
+                angleServoDown();
+                strafeLeft(2);
                 moveForward(20);
                 moveBackward(2);
                 releaseFirstPixel();
-                moveBackward(2);
+                moveBackward(4);
+                rotate(90);
                 angleServoUp();
-                strafeLeft(2);
-                rotate(-48);
-                moveBackward(40);
-                Arm.setPower(0.5);
+                angleServoMiddle();
+                moveForward(18);
+                strafeRight(6);
+                moveForward(4);
                 stopMovement(2000);
-                strafeLeft(4);
                 releaseSecondPixel();
+                moveBackward(3);
+                angleServoDown();
             }
             else {
                 angleServoDown();

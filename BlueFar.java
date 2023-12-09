@@ -54,7 +54,7 @@ public class BlueFar extends LinearOpMode {
     public void angleServoDown() {
         angleServo1.setPosition(-0.99);
         angleServo2.setPosition(1);
-        sleep(2500);
+        sleep(1500);
     }
 
     public void angleServoUp() {
