@@ -1,18 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Config
 @Autonomous(name = "CameraCoords")
 public class CameraCoordinates extends LinearOpMode {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -29,7 +33,19 @@ public class CameraCoordinates extends LinearOpMode {
 
     DcMotor leftF, leftB, rightF, rightB, Arm;
     Servo angleServo1, angleServo2, rightServo, leftServo;
-
+    public ArrayList<Point2> addCoordinates(List<Recognition> currentRecognitions){
+        ArrayList<Point2> s = new ArrayList<>();
+        s.add(new Point2(currentRecognitions.get(0).getLeft(), currentRecognitions.get(0).getTop()));
+        s.add(new Point2(currentRecognitions.get(0).getRight(), currentRecognitions.get(0).getBottom()));
+        return s;
+    }
+    public void printBoundingCoordinates(ArrayList<Point2> a){
+            telemetry.addData("Left (x1): ", a.get(0).getX());
+            telemetry.addData("Top (y1): ", a.get(0).getX());
+            telemetry.addData("Right (x2): ", a.get(0).getX());
+            telemetry.addData("Bottom (y2): ", a.get(0).getX());
+            telemetry.update();
+    }
     public void runOpMode() {
         leftF = hardwareMap.dcMotor.get("Left_Front_Motor");
         leftB = hardwareMap.dcMotor.get("Left_Back_Motor");
@@ -61,6 +77,8 @@ public class CameraCoordinates extends LinearOpMode {
             float y1 = currentRecognitions.get(0).getTop();
             float x2 = currentRecognitions.get(0).getRight();
             float y2 = currentRecognitions.get(0).getBottom();
+            printBoundingCoordinates(addCoordinates(currentRecognitions));
+
             //Code to determine in which one of the three lines the team prop is in
             //int teamProp; if teamProp == 0, left; if teamProp == 1, center; if teamProp == 2, right
             //Need to modify the numbers through trial and error.
@@ -157,4 +175,32 @@ public class CameraCoordinates extends LinearOpMode {
     }
 
 }
+class Point2{
+    private double x, y;
+    public Point2(double x, double y){
+        this.x = x;
+        this.y = y;
+    }
 
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+    public double[] getXY(){
+        double[] point = new double[2];
+        point[0] = x;
+        point[1] = y;
+        return point;
+    }
+}
