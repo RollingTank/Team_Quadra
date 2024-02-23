@@ -63,7 +63,7 @@ public class RedClosePreload extends LinearOpMode {
         pipeline = new OpModeVisionRed();
         camera.setPipeline(pipeline);
 
-        camera.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
+        camera.setMillisecondsPermissionTimeout(500000); // Timeout for obtaining permission is configurable. Set before opening.
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -86,11 +86,6 @@ public class RedClosePreload extends LinearOpMode {
 
         waitForStart();
 
-        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
-
-        for (LynxModule hub : allHubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
 
        // pipeline = new openREDClose();
 
