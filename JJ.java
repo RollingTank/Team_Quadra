@@ -6,46 +6,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.common.vision.OpModeVisionRed;
-import org.firstinspires.ftc.teamcode.common.vision.openREDClose;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.robot.Robot;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.common.centerstage.Globals;
-import org.firstinspires.ftc.teamcode.common.centerstage.PoseStorage;
-import org.firstinspires.ftc.teamcode.common.centerstage.ScoringPositions;
-import org.firstinspires.ftc.teamcode.common.hardware.Claw;
-import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
-import org.firstinspires.ftc.teamcode.common.rr.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.common.vision.Location;
-import org.firstinspires.ftc.teamcode.common.vision.OpModeVisionRed;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.teamcode.common.centerstage.Globals;
-import org.firstinspires.ftc.teamcode.common.centerstage.ScoringPositions;
-import org.firstinspires.ftc.teamcode.common.hardware.Claw;
-import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
-import org.firstinspires.ftc.teamcode.common.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -54,12 +19,8 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.firstinspires.ftc.teamcode.common.vision.openREDClose;
-import org.firstinspires.ftc.teamcode.common.vision.openBLUEFar;
-import org.firstinspires.ftc.teamcode.common.vision.openBLUEFar;
 public class JJ implements CameraStreamSource, VisionProcessor {
 
     public double leftValue;

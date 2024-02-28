@@ -1,15 +1,6 @@
 //package Wild;
 package org.firstinspires.ftc.teamcode.common.vision;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.hardware.lynx.LynxModule;
 
-import org.firstinspires.ftc.teamcode.common.centerstage.Globals;
-import org.firstinspires.ftc.teamcode.common.centerstage.PoseStorage;
-import org.firstinspires.ftc.teamcode.common.centerstage.ScoringPositions;
-import org.firstinspires.ftc.teamcode.common.hardware.Claw;
-import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
-import org.firstinspires.ftc.teamcode.common.rr.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.opmodes.auto.RedClosePreload;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,8 +14,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Core;
-
-import java.util.List;
 
 public class openBLUEFar extends OpenCvPipeline {
     public static boolean DETECT_RED = false;
